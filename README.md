@@ -1,2 +1,2 @@
 # MAD_Project
- Hostel Mobile Application
+ HostelHive Mobile Application
