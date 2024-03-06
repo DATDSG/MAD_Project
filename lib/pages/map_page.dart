@@ -14,6 +14,7 @@ class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
         backgroundColor: Colors.green[400],
         title: const Center(
@@ -22,7 +23,7 @@ class _MapPageState extends State<MapPage> {
             child: Text(
               'Find Place',
               style: TextStyle(
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w700,
                 color: Colors.black,
                 fontSize: 22,
               ),
