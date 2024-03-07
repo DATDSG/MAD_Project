@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "131042037860",
+    "project_id": "hostelhive-7cbad",
+    "storage_bucket": "hostelhive-7cbad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:131042037860:android:f7c36b2f3ae8bcf14c8f71",
+        "android_client_info": {
+          "package_name": "com.hostelHive.hostel_hive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfeF-zPKoh1Jiz4ErNct2-OAm7miPEXas"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
