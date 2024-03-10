@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hostel_hive/pages/home_page.dart';
 import 'sign_up_page.dart';
@@ -18,6 +19,25 @@ class _SignInPageState extends State<SignInPage> {
   bool isObscure = true;
   bool isEmailValid = true;
 
+  // Sign In Function
+  void signIn() async {
+    await FirebaseAuth.instance
+        .signInWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        )
+        .then(
+          (value) => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const HomePage(),
+            ),
+          ),
+        );
+  }
+
+  // Email & Password validations
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +46,9 @@ class _SignInPageState extends State<SignInPage> {
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20,),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+            ),
             child: Column(
               children: [
                 // Logo
@@ -35,7 +57,7 @@ class _SignInPageState extends State<SignInPage> {
                   width: 250,
                   height: 200,
                 ),
-            
+
                 // Sign In Text
                 const Text(
                   'Sign In',
@@ -44,11 +66,11 @@ class _SignInPageState extends State<SignInPage> {
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-            
+
                 const SizedBox(
                   height: 20,
                 ),
-            
+
                 // Email address
                 TextField(
                   controller: emailController,
@@ -79,11 +101,11 @@ class _SignInPageState extends State<SignInPage> {
                     isEmailValid = emailRegExp.hasMatch(value);
                   }),
                 ),
-            
+
                 const SizedBox(
                   height: 10,
                 ),
-            
+
                 // Password
                 TextField(
                   controller: passwordController,
@@ -121,23 +143,17 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                   ),
                 ),
-            
+
                 const SizedBox(
                   height: 20,
                 ),
-            
+
                 // Sign In button
                 SizedBox(
                   height: 45,
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const HomePage(),
-                        ),
-                      );
-                    },
+                    onPressed: signIn,
                     style: ButtonStyle(
                       shadowColor: MaterialStateProperty.all(Colors.grey),
                       backgroundColor: MaterialStateProperty.all(
@@ -159,11 +175,11 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                   ),
                 ),
-            
+
                 const SizedBox(
                   height: 20,
                 ),
-            
+
                 // Sign In text
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

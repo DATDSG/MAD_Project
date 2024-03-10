@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hostel_hive/pages/home_page.dart';
 import 'sign_in_page.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -23,6 +25,25 @@ class _SignUpPageState extends State<SignUpPage> {
   bool isChecked = false;
   bool isPasswordMatch = true;
   bool isValidContactNumber = true;
+
+  // Sign Up Function
+  void signUp() async {
+    await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        )
+        .then(
+          (value) => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const HomePage(),
+            ),
+          ),
+        );
+  }
+
+  // Email, password, contact number validation
 
   @override
   Widget build(BuildContext context) {
@@ -263,7 +284,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   height: 45,
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: signUp,
                     style: ButtonStyle(
                       shadowColor: MaterialStateProperty.all(Colors.grey),
                       backgroundColor: MaterialStateProperty.all(
