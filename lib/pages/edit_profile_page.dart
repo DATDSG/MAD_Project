@@ -8,6 +8,12 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
+  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController confirmNewPasswordController =
+      TextEditingController();
+
+  bool isObscure = true;
+  bool isPasswordMatch = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
