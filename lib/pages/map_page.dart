@@ -17,18 +17,23 @@ class _MapPageState extends State<MapPage> {
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
         backgroundColor: Colors.green[400],
-        title: const Center(
-          child: Padding(
-            padding: EdgeInsets.only(right: 20),
-            child: Text(
-              'Find Place',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                color: Colors.black,
-                fontSize: 22,
+        elevation: 2,
+        shadowColor: Colors.black,
+        title: const Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(right: 20),
+              child: Text(
+                'Find Place',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black,
+                  fontSize: 22,
+                ),
               ),
             ),
-          ),
+          ],
         ),
       ),
       body: Padding(

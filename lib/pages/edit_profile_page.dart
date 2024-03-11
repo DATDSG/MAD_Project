@@ -11,20 +11,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
         backgroundColor: Colors.green[400],
-        title: const Center(
-          child: Padding(
-            padding: EdgeInsets.only(right: 20),
-            child: Text(
+        elevation: 2,
+        shadowColor: Colors.black,
+        title: const Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
               'Edit Profile',
               style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-                fontSize: 22,
+                fontWeight: FontWeight.w700,
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
