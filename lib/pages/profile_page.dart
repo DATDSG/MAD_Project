@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hostel_hive/pages/sign_in_page.dart';
 
 import 'edit_profile_page.dart';
 
@@ -10,6 +12,18 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  // Sign Out Function
+  void signOut() async {
+    await FirebaseAuth.instance.signOut().then(
+          (value) => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const SignInPage(),
+            ),
+          ),
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       ),
-      body:ListView(
+      body: ListView(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(
@@ -244,7 +258,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     height: 45,
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: (){},
+                      onPressed: signOut,
                       style: ButtonStyle(
                         shadowColor: MaterialStateProperty.all(Colors.grey),
                         backgroundColor: MaterialStateProperty.all(

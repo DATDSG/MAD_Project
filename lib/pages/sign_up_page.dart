@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hostel_hive/pages/home_page.dart';
@@ -11,6 +12,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController confirmPasswordController =
@@ -27,7 +29,7 @@ class _SignUpPageState extends State<SignUpPage> {
   bool isValidContactNumber = true;
 
   // Sign Up Function
-  void signUp() async {
+  Future signUp() async {
     await FirebaseAuth.instance
         .createUserWithEmailAndPassword(
           email: emailController.text,
@@ -41,6 +43,21 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
           ),
         );
+
+    // adding users information
+    addUserDetails(
+      nameController.text.trim(),
+      emailController.text.trim(),
+      contactNumberController.text.trim(),
+    );
+  }
+
+  Future addUserDetails(String name, String email, String contactNumber) async {
+    await FirebaseFirestore.instance.collection('Users').add({
+      'name': name,
+      'email': email,
+      'contactNumber': contactNumber,
+    });
   }
 
   // Email, password, contact number validation
@@ -80,6 +97,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
                 // Name
                 TextField(
+                  controller: nameController,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(8),
                     border: OutlineInputBorder(
@@ -110,6 +128,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
                 // Email address
                 TextField(
+                  controller: emailController,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(8),
                     border: OutlineInputBorder(
