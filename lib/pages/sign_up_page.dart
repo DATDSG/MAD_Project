@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hostel_hive/pages/home_page.dart';
+import 'package:hostel_hive/pages/user/home_page.dart';
 import 'sign_in_page.dart';
 
 class SignUpPage extends StatefulWidget {
