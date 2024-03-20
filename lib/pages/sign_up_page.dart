@@ -30,34 +30,28 @@ class _SignUpPageState extends State<SignUpPage> {
 
   // Sign Up Function
   Future signUp() async {
-    await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(
-          email: emailController.text,
-          password: passwordController.text,
-        )
-        .then(
-          (value) => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const HomePage(),
-            ),
-          ),
-        );
-
-    // adding users information
-    addUserDetails(
-      nameController.text.trim(),
-      emailController.text.trim(),
-      contactNumberController.text.trim(),
+    UserCredential userCredential =
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: emailController.text,
+      password: passwordController.text,
     );
-  }
 
-  Future addUserDetails(String name, String email, String contactNumber) async {
-    await FirebaseFirestore.instance.collection('Users').add({
-      'name': name,
-      'email': email,
-      'contactNumber': contactNumber,
-    });
+    // add user details to database
+    FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userCredential.user!.email)
+        .set({
+      'name': nameController.text,
+      'email': emailController.text,
+      'contactNumber': contactNumberController.text,
+    }).then(
+      (value) => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomePage(),
+        ),
+      ),
+    );
   }
 
   // Email, password, contact number validation

@@ -1,7 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hostel_hive/pages/sign_in_page.dart';
-
 import 'edit_profile_page.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -12,6 +12,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final currentUser = FirebaseAuth.instance.currentUser!;
+
   // Sign Out Function
   void signOut() async {
     await FirebaseAuth.instance.signOut().then(
@@ -44,260 +46,281 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       ),
-      body: ListView(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 20,
-            ),
-            child: Column(
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('Users')
+            .doc(currentUser.email)
+            .snapshots(),
+        builder: ((context, snapshot) {
+          if (snapshot.hasData) {
+            final userData = snapshot.data!.data() as Map<String, dynamic>;
+            return ListView(
               children: [
-                const Center(
-                  child: CircleAvatar(
-                    radius: 90,
-                    backgroundImage: AssetImage('assets/images/profile.jpg'),
-                  ),
-                ),
-
-                const SizedBox(
-                  height: 10,
-                ),
-                // Name
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          spreadRadius: 1,
-                          blurRadius: 2,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.only(top: 10, left: 20),
-                          child: Text(
-                            "Name",
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20, bottom: 10),
-                          child: Text(
-                            'Ishara Uditha',
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.grey[700],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 20,
                   ),
-                ),
+                  child: Column(
+                    children: [
+                      const Center(
+                        child: CircleAvatar(
+                          radius: 90,
+                          backgroundImage:
+                              AssetImage('assets/images/profile.jpg'),
+                        ),
+                      ),
 
-                // Email address
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          spreadRadius: 1,
-                          blurRadius: 2,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Name
-                        const Padding(
-                          padding: EdgeInsets.only(top: 10, left: 20),
-                          child: Text(
-                            "Email Address",
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20, bottom: 10),
-                          child: Text(
-                            'uditha@gmail.com',
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.grey[700],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Contact Number
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          spreadRadius: 1,
-                          blurRadius: 2,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Name
-                        const Padding(
-                          padding: EdgeInsets.only(top: 10, left: 20),
-                          child: Text(
-                            "Contact Number",
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20, bottom: 10),
-                          child: Text(
-                            '0761516278',
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.grey[700],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Edit button
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: SizedBox(
-                    height: 45,
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const EditProfilePage(),
-                          ),
-                        );
-                      },
-                      style: ButtonStyle(
-                        shadowColor: MaterialStateProperty.all(Colors.grey),
-                        backgroundColor: MaterialStateProperty.all(
-                          Colors.green[400],
-                        ),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      // Name
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                spreadRadius: 1,
+                                blurRadius: 2,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(top: 10, left: 20),
+                                child: Text(
+                                  "Name",
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 20, bottom: 10),
+                                child: Text(
+                                  userData['name'],
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(right: 5),
-                            child: Icon(
-                              Icons.edit_note_rounded,
-                              color: Colors.black,
-                            ),
-                          ),
-                          Text(
-                            'Edit Profile',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
 
-                // Log Out button
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: SizedBox(
-                    height: 45,
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: signOut,
-                      style: ButtonStyle(
-                        shadowColor: MaterialStateProperty.all(Colors.grey),
-                        backgroundColor: MaterialStateProperty.all(
-                          Colors.green[100],
-                        ),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
+                      // Email address
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                spreadRadius: 1,
+                                blurRadius: 2,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Name
+                              const Padding(
+                                padding: EdgeInsets.only(top: 10, left: 20),
+                                child: Text(
+                                  "Email Address",
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 20, bottom: 10),
+                                child: Text(
+                                  currentUser.email!,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(right: 5),
-                            child: Icon(
-                              Icons.logout_outlined,
-                              color: Colors.black,
-                            ),
+
+                      // Contact Number
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                spreadRadius: 1,
+                                blurRadius: 2,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
-                          Text(
-                            'Log Out',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
-                            ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Name
+                              const Padding(
+                                padding: EdgeInsets.only(top: 10, left: 20),
+                                child: Text(
+                                  "Contact Number",
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 20, bottom: 10),
+                                child: Text(
+                                  userData['contactNumber'],
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+
+                      // Edit button
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: SizedBox(
+                          height: 45,
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const EditProfilePage(),
+                                ),
+                              );
+                            },
+                            style: ButtonStyle(
+                              shadowColor:
+                                  MaterialStateProperty.all(Colors.grey),
+                              backgroundColor: MaterialStateProperty.all(
+                                Colors.green[400],
+                              ),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(right: 5),
+                                  child: Icon(
+                                    Icons.edit_note_rounded,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Text(
+                                  'Edit Profile',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      // Log Out button
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: SizedBox(
+                          height: 45,
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: signOut,
+                            style: ButtonStyle(
+                              shadowColor:
+                                  MaterialStateProperty.all(Colors.grey),
+                              backgroundColor: MaterialStateProperty.all(
+                                Colors.green[100],
+                              ),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(right: 5),
+                                  child: Icon(
+                                    Icons.logout_outlined,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Text(
+                                  'Log Out',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
-            ),
-          ),
-        ],
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        }),
       ),
     );
   }
