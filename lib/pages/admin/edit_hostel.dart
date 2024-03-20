@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class editHostel extends StatefulWidget {
-  const editHostel({super.key});
+class EditHostel extends StatefulWidget {
+  const EditHostel({super.key});
 
   @override
-  State<editHostel> createState() => _editHostelState();
+  State<EditHostel> createState() => _EditHostelState();
 }
 
-class _editHostelState extends State<editHostel> {
+class _EditHostelState extends State<EditHostel> {
   @override
   Widget build(BuildContext context) {
     return Container();
