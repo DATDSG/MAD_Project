@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'hostel_deails_page.dart';
+import 'package:hostel_hive/pages/google_map.dart';
+import 'package:hostel_hive/pages/user/hostel_deails_page.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -85,6 +86,7 @@ class _MapPageState extends State<MapPage> {
             ),
 
             // Google Map
+            //googleMap(),
             Container(
               width: double.infinity,
               height: 180,

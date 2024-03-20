@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'map_page.dart';
+import 'package:hostel_hive/pages/user/map_page.dart';
 import 'package:hostel_hive/pages/profile_page.dart';
 
 class HomePage extends StatefulWidget {

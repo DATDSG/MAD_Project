@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hostel_hive/pages/google_map.dart';
 
 class HostelDetailsPage extends StatefulWidget {
   const HostelDetailsPage({super.key});
@@ -33,6 +34,7 @@ class _HostelDetailsPageState extends State<HostelDetailsPage> {
           // Map
           Padding(
             padding: const EdgeInsets.only(top: 5.0),
+            //child: googleMap(),
             child: Container(
               width: double.infinity,
               height: 200,
