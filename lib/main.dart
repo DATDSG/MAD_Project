@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hostel_hive/pages/sign_in_page.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import 'package:hostel_hive/firebase_options.dart';
 
 
 void main() async{
