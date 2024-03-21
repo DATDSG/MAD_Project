@@ -42,7 +42,6 @@ class _SignUpPageState extends State<SignUpPage> {
         .doc(userCredential.user!.email)
         .set({
       'name': nameController.text,
-      'email': emailController.text,
       'contactNumber': contactNumberController.text,
     }).then(
       (value) => Navigator.push(
