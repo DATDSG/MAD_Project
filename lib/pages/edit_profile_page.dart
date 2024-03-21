@@ -440,7 +440,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                         // Change Password
                         const Padding(
-                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          padding: EdgeInsets.only(top: 20, bottom: 10),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -494,10 +494,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         //     ),
                         //   ),
                         // ),
-
-                        const SizedBox(
-                          height: 10,
-                        ),
 
                         // email address
                         TextField(
