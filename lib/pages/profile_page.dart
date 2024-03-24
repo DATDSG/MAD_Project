@@ -12,6 +12,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  //get current user
   final currentUser = FirebaseAuth.instance.currentUser!;
 
   // Sign Out Function
@@ -53,7 +54,10 @@ class _ProfilePageState extends State<ProfilePage> {
             .snapshots(),
         builder: ((context, snapshot) {
           if (snapshot.hasData) {
+            // get user data
             final userData = snapshot.data!.data() as Map<String, dynamic>;
+            final profilePictureUrl = userData['profilePictureUrl'];
+
             return ListView(
               children: [
                 Padding(
@@ -63,17 +67,34 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   child: Column(
                     children: [
-                      const Center(
+                      // profile picture
+                      Center(
                         child: CircleAvatar(
-                          radius: 90,
-                          backgroundImage:
-                              AssetImage('assets/images/profile.jpg'),
+                          radius: 59,
+                          backgroundColor: Colors.green[400],
+                          child: Container(
+                            height: 100,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              shape: BoxShape.circle,
+                              image: profilePictureUrl != null
+                                  ? DecorationImage(
+                                      image: NetworkImage(profilePictureUrl),
+                                    )
+                                  : const DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/profile.jpg'),
+                                    ),
+                            ),
+                          ),
                         ),
                       ),
 
                       const SizedBox(
                         height: 10,
                       ),
+
                       // Name
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 5),

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hostel_hive/pages/user/map_page.dart';
 import 'package:hostel_hive/pages/profile_page.dart';
@@ -10,6 +12,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // get current user
+  final user = FirebaseAuth.instance.currentUser!;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +34,7 @@ class _HomePageState extends State<HomePage> {
         ),
 
         // Profile picture
-        actions:  [
+        actions: [
           GestureDetector(
             onTap: () {
               Navigator.push(
@@ -37,11 +42,50 @@ class _HomePageState extends State<HomePage> {
                 MaterialPageRoute(builder: (context) => const ProfilePage()),
               );
             },
-            child: const Padding(
-              padding: EdgeInsets.only(right: 5),
-              child: CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/profile.jpg'),
-                  radius: 20),
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('Users')
+                  .doc(user.email)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  // get user data
+                  final userData =
+                      snapshot.data!.data() as Map<String, dynamic>;
+
+                  // get profile picture url
+                  final profilePictureUrl = userData['profilePictureUrl'];
+
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: CircleAvatar(
+                      radius: 22, // Adjust the radius as needed
+                      backgroundColor: Colors.green[700], // Border color
+                      child: Container(
+                        height: 35,
+                        width: 35,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: profilePictureUrl != null
+                              ? DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(profilePictureUrl),
+                                )
+                              : const DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image:
+                                      AssetImage('assets/images/profile.jpg'),
+                                ),
+                        ),
+                      ),
+                    ),
+                  );
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
             ),
           ),
         ],
@@ -102,15 +146,16 @@ class _HomePageState extends State<HomePage> {
         padding: const EdgeInsets.only(top: 5),
         child: ListView(
           children: [
+            // find place
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
               child: GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const MapPage(),
-                  ),
-                );
+                    MaterialPageRoute(
+                      builder: (context) => const MapPage(),
+                    ),
+                  );
                 },
                 child: Container(
                   width: 200,

@@ -40,6 +40,7 @@ class _MapPageState extends State<MapPage> {
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: ListView(
           children: [
+            // search bar
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
