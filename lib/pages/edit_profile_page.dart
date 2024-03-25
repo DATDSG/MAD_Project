@@ -143,7 +143,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   // Pick image from device
   Future<void> changeProfilePicture() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? image = await picker.pickImage(source: ImageSource.camera);
     if (image == null) return;
 
     // Upload image to firebase storage
@@ -493,7 +493,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
 
                         // Change Password
-                        const Padding(
+                        const Padding(            
                           padding: EdgeInsets.only(top: 20, bottom: 10),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
