@@ -1,6 +1,11 @@
+import 'dart:async';
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -10,6 +15,9 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
+  Uint8List? pickedImage;
+  String? profilePictureUrl;
+
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController contactNumberController = TextEditingController();
@@ -27,9 +35,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future updateUserDetails() async {
     // update name
     if (nameController.text.isNotEmpty) {
-      await userCollection.doc(currentUser.email).update({
-        'name': nameController.text,
-      });
+      updateName();
 
       // update success alert box
       showDialog(
@@ -57,9 +63,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     // update contact number
     if (contactNumberController.text.isNotEmpty) {
-      await userCollection.doc(currentUser.email).update({
-        'contactNumber': contactNumberController.text,
-      });
+      updateContactNumber();
 
       // update success alert box
       showDialog(
@@ -88,53 +92,93 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   // change password
   Future changePassword() async {
-    if (emailController.text == currentUser.email) {
-      await FirebaseAuth.instance.sendPasswordResetEmail(
-        email: emailController.text,
-      );
+    updatePassword();
 
-      // password change email sent success alert box
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Done'),
-            content: const Text('Your password change Email sent!'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+    // password change email sent success alert box
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Done'),
+          content: const Text('Your password change Email sent!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
 
+    setState(() {
+      emailController.clear();
+    });
+  }
+
+  // update name
+  Future updateName() async {
+    await userCollection.doc(currentUser.email).update({
+      'name': nameController.text,
+    });
+  }
+
+  // update contact number
+  Future updateContactNumber() async {
+    await userCollection.doc(currentUser.email).update({
+      'contactNumber': contactNumberController.text,
+    });
+  }
+
+  // change password
+  Future updatePassword() async {
+    await FirebaseAuth.instance.sendPasswordResetEmail(
+      email: currentUser.email!,
+    );
+  }
+
+  // update profile picture
+  // Pick image from device
+  Future<void> changeProfilePicture() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image == null) return;
+
+    // Upload image to firebase storage
+    final storageRef = FirebaseStorage.instance.ref();
+    final imageRef = storageRef.child('profile_pictures/${currentUser.email}');
+    final imageBytes = await image.readAsBytes();
+    await imageRef.putData(imageBytes);
+
+    setState(() {
+      pickedImage = imageBytes;
+    });
+
+    // Update profile picture URL in Firestore database
+    final imageUrl = await imageRef.getDownloadURL();
+    await userCollection.doc(currentUser.email).update({
+      'profilePictureUrl': imageUrl,
+    });
+  }
+
+  // Get profile picture form firestore database
+  Future<void> getProfilePicture() async {
+    final userData = await userCollection.doc(currentUser.email).get();
+    final imageUrl = userData['profilePictureUrl'];
+
+    if (imageUrl != null) {
       setState(() {
-        emailController.clear();
+        profilePictureUrl = imageUrl;
       });
-    } else {
-      // show error alert box
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Error'),
-            content: const Text('Invalid Email'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
     }
+  }
+
+  @override
+  void initState() {
+    getProfilePicture();
+    super.initState();
   }
 
   @override
@@ -164,6 +208,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
+              // get user data
               final userData = snapshot.data!.data() as Map<String, dynamic>;
 
               return ListView(
@@ -174,30 +219,39 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     child: Column(
                       children: [
                         // profile picture
-                        const Center(
-                          child: CircleAvatar(
-                            radius: 60,
-                            backgroundImage:
-                                AssetImage('assets/images/profile.jpg'),
-                          ),
-                        ),
-
-                        // change profile picture button
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap: () {},
-                                child: const Text(
-                                  'Change Profile Picture',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                  ),
+                        Center(
+                          child: GestureDetector(
+                            onTap: changeProfilePicture,
+                            child: CircleAvatar(
+                              radius: 59,
+                              backgroundColor: Colors.green[400],
+                              child: Container(
+                                height: 100,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey,
+                                  shape: BoxShape.circle,
+                                  image: pickedImage != null
+                                      ? DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: MemoryImage(
+                                            pickedImage!,
+                                          ),
+                                        )
+                                      : profilePictureUrl != null
+                                          ? DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: NetworkImage(userData[
+                                                  'profilePictureUrl']),
+                                            )
+                                          : const DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: AssetImage(
+                                                  'assets/images/profile.jpg'),
+                                            ),
                                 ),
                               ),
-                            ],
+                            ),
                           ),
                         ),
 
@@ -495,34 +549,34 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         //   ),
                         // ),
 
-                        // email address
-                        TextField(
-                          controller: emailController,
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.all(8),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                color: Colors.green,
-                              ),
-                            ),
-                            prefixIcon: Icon(
-                              Icons.mail,
-                              size: 18,
-                              color: Colors.grey[400],
-                            ),
-                            hintText: 'Email address',
-                            hintStyle: TextStyle(
-                              color: Colors.grey[400],
-                            ),
-                          ),
-                          onChanged: (value) => setState(() {
-                            isEmailValid = emailRegExp.hasMatch(value);
-                          }),
-                        ),
+                        // // email address
+                        // TextField(
+                        //   controller: emailController,
+                        //   decoration: InputDecoration(
+                        //     contentPadding: const EdgeInsets.all(8),
+                        //     border: OutlineInputBorder(
+                        //       borderRadius: BorderRadius.circular(10),
+                        //     ),
+                        //     focusedBorder: OutlineInputBorder(
+                        //       borderRadius: BorderRadius.circular(10),
+                        //       borderSide: const BorderSide(
+                        //         color: Colors.green,
+                        //       ),
+                        //     ),
+                        //     prefixIcon: Icon(
+                        //       Icons.mail,
+                        //       size: 18,
+                        //       color: Colors.grey[400],
+                        //     ),
+                        //     hintText: 'Email address',
+                        //     hintStyle: TextStyle(
+                        //       color: Colors.grey[400],
+                        //     ),
+                        //   ),
+                        //   onChanged: (value) => setState(() {
+                        //     isEmailValid = emailRegExp.hasMatch(value);
+                        //   }),
+                        // ),
 
                         // password change button
                         Padding(
