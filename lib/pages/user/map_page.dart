@@ -107,19 +107,10 @@ class _MapPageState extends State<MapPage> {
                   ),
                 ],
               ),
-              child: Container(
+              child: const SizedBox(
                 width: double.infinity,
                 height: 180,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colors.black.withOpacity(0.3),
-                      Colors.black.withOpacity(0.3),
-                    ],
-                  ),
-                ),
+                child: googleMap(),
               ),
             ),
 

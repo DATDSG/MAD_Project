@@ -32,21 +32,13 @@ class _HostelDetailsPageState extends State<HostelDetailsPage> {
       body: ListView(
         children: [
           // Map
-          Padding(
-            padding: const EdgeInsets.only(top: 5.0),
+          const Padding(
+            padding: EdgeInsets.only(top: 5.0),
             //child: googleMap(),
-            child: Container(
+            child: SizedBox(
               width: double.infinity,
               height: 200,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(
-                    'assets/images/map.png',
-                  ),
-                  fit: BoxFit.cover,
-                ),
-                color: Colors.white,
-              ),
+              child: googleMap(),
             ),
           ),
 
