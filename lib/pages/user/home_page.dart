@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hostel_hive/pages/sign_in_page.dart';
 import 'package:hostel_hive/pages/user/map_page.dart';
-import 'package:hostel_hive/pages/profile_page.dart';
+import 'package:hostel_hive/pages/user/profile_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -93,8 +94,9 @@ class _HomePageState extends State<HomePage> {
 
       // Navigation
       drawer: Drawer(
-        backgroundColor: Colors.green[100],
+        backgroundColor: Colors.grey[100],
         child: ListView(
+          
           children: [
             // Logo
             DrawerHeader(
@@ -107,10 +109,19 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
+            const SizedBox(
+              height: 10,
+            ),
+
             // Home
             ListTile(
               leading: const Icon(Icons.home),
-              title: const Text('Home'),
+              title: const Text(
+                'H O M E',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -120,10 +131,19 @@ class _HomePageState extends State<HomePage> {
               },
             ),
 
+            const SizedBox(
+              height: 10,
+            ),
+
             // Profile
             ListTile(
               leading: const Icon(Icons.person),
-              title: const Text('Profile'),
+              title: const Text(
+                'P R O F I L E',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -133,11 +153,44 @@ class _HomePageState extends State<HomePage> {
               },
             ),
 
+            const SizedBox(
+              height: 10,
+            ),
+
             // About
             ListTile(
               leading: const Icon(Icons.info),
-              title: const Text('About'),
+              title: const Text(
+                'A B O U T',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
               onTap: () {},
+            ),
+
+            const SizedBox(
+              height: 10,
+            ),
+
+            // log out
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text(
+                'L O G  O U T',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              onTap: () async {
+                await FirebaseAuth.instance.signOut().then(
+                      (value) => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const SignInPage(),
+                        ),
+                      ),
+                    );
+              },
             ),
           ],
         ),

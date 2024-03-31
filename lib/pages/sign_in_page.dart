@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hostel_hive/pages/user/home_page.dart';
 import 'package:hostel_hive/pages/sign_up_page.dart';
+import 'package:hostel_hive/pages/user/home_page.dart';
+import 'package:hostel_hive/services/auth_service.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -13,30 +14,82 @@ class SignInPage extends StatefulWidget {
 class _SignInPageState extends State<SignInPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
   final RegExp emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
 
   bool isObscure = true;
   bool isEmailValid = true;
 
   // Sign In Function
-  void signIn() async {
-    await FirebaseAuth.instance
-        .signInWithEmailAndPassword(
-          email: emailController.text,
-          password: passwordController.text,
-        )
-        .then(
-          (value) => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const HomePage(),
-            ),
+  Future signIn() async {
+    // loading circle
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Center(
+          child: CircularProgressIndicator(
+            color: Colors.green[400],
           ),
         );
+      },
+    );
+
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      popCircularIndicator();
+
+      // navigate to home page
+      navigateToHomePage();
+    } catch (e) {
+      popCircularIndicator();
+
+      if (e is FirebaseAuthException) {
+        String errorMessage;
+        switch (e.code) {
+          case 'user-not-found':
+            errorMessage = 'User not found';
+            break;
+          case 'wrong-password':
+            errorMessage = 'Wrong password';
+            break;
+          default:
+            errorMessage = 'Error signing in';
+        }
+
+        _showErrorDialog(errorMessage);
+      } else {
+        _showErrorDialog('Failed to sign in');
+      }
+    }
   }
 
-  // Email & Password validations
+  void popCircularIndicator() {
+    Navigator.pop(context);
+  }
+
+  // navigate to Home page
+  void navigateToHomePage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const HomePage(),
+      ),
+    );
+  }
+
+  // alert dialog
+  void _showErrorDialog(String title) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Center(child: Text(title)),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -200,6 +253,107 @@ class _SignInPageState extends State<SignInPage> {
                         style: TextStyle(
                           color: Colors.green,
                           fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(
+                  height: 20,
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    // google sign in
+                    SizedBox(
+                      height: 45,
+                      width: 160,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          AuthService().signInwithGoogle();
+                        },
+                        style: ButtonStyle(
+                          shadowColor: MaterialStateProperty.all(Colors.grey),
+                          backgroundColor: MaterialStateProperty.all(
+                            Colors.white,
+                          ),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              side: const BorderSide(
+                                color: Color.fromARGB(255, 102, 187, 106),
+                                width: 2,
+                              ),
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Image.asset(
+                              'assets/images/googlelogo.png',
+                              width: 20,
+                              height: 20,
+                            ),
+                            const Text(
+                              'Google',
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(
+                      width: 20,
+                    ),
+
+                    // facebook sign in
+                    SizedBox(
+                      height: 45,
+                      width: 160,
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ButtonStyle(
+                          shadowColor: MaterialStateProperty.all(Colors.grey),
+                          backgroundColor: MaterialStateProperty.all(
+                            Colors.white,
+                          ),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              side: const BorderSide(
+                                color: Color.fromARGB(255, 102, 187, 106),
+                                width: 2,
+                              ),
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Image.asset(
+                              'assets/images/fblogo.png',
+                              width: 20,
+                              height: 20,
+                            ),
+                            const Text(
+                              'Facebook',
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),

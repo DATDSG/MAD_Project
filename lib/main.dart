@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hostel_hive/pages/sign_in_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:hostel_hive/firebase_options.dart';
-
+import 'package:hostel_hive/pages/user/auth_page.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SignInPage(),
+      home: AuthPage(),
     );
   }
 }

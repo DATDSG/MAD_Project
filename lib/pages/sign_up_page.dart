@@ -30,30 +30,98 @@ class _SignUpPageState extends State<SignUpPage> {
 
   // Sign Up Function
   Future signUp() async {
-    UserCredential userCredential =
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: emailController.text,
-      password: passwordController.text,
-    );
+    // Validate form fields
+    if (!validateFields()) {
+      return;
+    }
 
-    // add user details to database
-    FirebaseFirestore.instance
-        .collection('Users')
-        .doc(userCredential.user!.email)
-        .set({
-      'name': nameController.text,
-      'contactNumber': contactNumberController.text,
-    }).then(
-      (value) => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomePage(),
-        ),
-      ),
+    try {
+      // loding circle
+      showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+              child: CircularProgressIndicator(
+            color: Colors.green[400],
+          ));
+        },
+      );
+
+      // Create user with email and password
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+      // Add user details to database
+      await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(userCredential.user!.email)
+          .set({
+        'name': nameController.text,
+        'contactNumber': contactNumberController.text,
+      });
+
+      pop();
+
+      // Navigate to home page after successful sign-up
+      navigateToHome();
+    } catch (e) {
+      _showErrorDialog('Failed to sign up. Please try again.');
+    }
+  }
+
+  // pop loding circle
+  void pop() {
+    Navigator.pop(context);
+  }
+
+  bool validateFields() {
+    if (nameController.text.isEmpty ||
+        !emailRegExp.hasMatch(emailController.text) ||
+        passwordController.text.isEmpty ||
+        confirmPasswordController.text.isEmpty ||
+        !contactNumberRegex.hasMatch(contactNumberController.text) ||
+        !isChecked) {
+      _showErrorDialog('Please fill all fields correctly.');
+      return false;
+    }
+
+    if (passwordController.text != confirmPasswordController.text) {
+      _showErrorDialog('Passwords do not match.');
+      return false;
+    }
+
+    return true;
+  }
+
+  void _showErrorDialog(String title) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Center(
+              child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+            ),
+          )),
+        );
+      },
     );
   }
 
-  // Email, password, contact number validation
+  // navigate to Home page
+  void navigateToHome() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const HomePage(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

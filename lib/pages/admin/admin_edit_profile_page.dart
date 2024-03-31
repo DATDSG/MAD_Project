@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,31 +6,27 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({super.key});
+class AdminEditProfilePage extends StatefulWidget {
+  const AdminEditProfilePage({super.key});
 
   @override
-  State<EditProfilePage> createState() => _EditProfilePageState();
+  State<AdminEditProfilePage> createState() => _AdminEditProfilePageState();
 }
 
-class _EditProfilePageState extends State<EditProfilePage> {
+class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
   Uint8List? pickedImage;
   String? profilePictureUrl;
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController contactNumberController = TextEditingController();
-  // final TextEditingController newPasswordController = TextEditingController();
-  // final TextEditingController confirmNewPasswordController =TextEditingController();
   final currentUser = FirebaseAuth.instance.currentUser!;
-  final userCollection = FirebaseFirestore.instance.collection('Users');
+  final userCollection = FirebaseFirestore.instance.collection('Admins');
   final RegExp emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
 
-  // bool isObscure = true;
-  // bool isPasswordMatch = true;
   bool isEmailValid = true;
 
-  // update user details
+  // update admin details
   Future updateUserDetails() async {
     // update name
     if (nameController.text.isNotEmpty) {
@@ -203,13 +198,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
       ),
       body: StreamBuilder(
           stream: FirebaseFirestore.instance
-              .collection('Users')
+              .collection('Admins')
               .doc(currentUser.email)
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               // get user data
-              final userData = snapshot.data!.data() as Map<String, dynamic>;
+              final adminData = snapshot.data!.data() as Map<String, dynamic>;
 
               return ListView(
                 children: [
@@ -241,7 +236,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       : profilePictureUrl != null
                                           ? DecorationImage(
                                               fit: BoxFit.cover,
-                                              image: NetworkImage(userData[
+                                              image: NetworkImage(adminData[
                                                   'profilePictureUrl']),
                                             )
                                           : const DecorationImage(
@@ -295,7 +290,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       child: TextField(
                                         controller: nameController,
                                         decoration: InputDecoration(
-                                          hintText: userData['name'],
+                                          hintText: adminData['name'],
                                           hintStyle: TextStyle(
                                             fontSize: 15,
                                             color: Colors.grey[700],
@@ -321,75 +316,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             ),
                           ),
                         ),
-
-                        // Email address
-                        // Padding(
-                        //   padding: const EdgeInsets.symmetric(vertical: 5),
-                        //   child: Container(
-                        //     width: double.infinity,
-                        //     decoration: BoxDecoration(
-                        //       borderRadius: BorderRadius.circular(10),
-                        //       color: Colors.white,
-                        //       boxShadow: [
-                        //         BoxShadow(
-                        //           color: Colors.black.withOpacity(0.1),
-                        //           spreadRadius: 1,
-                        //           blurRadius: 2,
-                        //           offset: const Offset(0, 2),
-                        //         ),
-                        //       ],
-                        //     ),
-                        //     child: Column(
-                        //       crossAxisAlignment: CrossAxisAlignment.start,
-                        //       children: [
-                        //         const Padding(
-                        //           padding: EdgeInsets.only(top: 10, left: 20),
-                        //           child: Text(
-                        //             "Email Address",
-                        //             style: TextStyle(
-                        //               fontSize: 17,
-                        //               fontWeight: FontWeight.w500,
-                        //             ),
-                        //           ),
-                        //         ),
-                        //         Padding(
-                        //           padding: const EdgeInsets.only(
-                        //               left: 20, bottom: 10),
-                        //           child: SizedBox(
-                        //             height: 25,
-                        //             child: Padding(
-                        //               padding: const EdgeInsets.only(right: 10),
-                        //               child: TextField(
-                        //                 controller: emailController,
-                        //                 decoration: InputDecoration(
-                        //                   hintText: currentUser.email,
-                        //                   hintStyle: TextStyle(
-                        //                     fontSize: 15,
-                        //                     color: Colors.grey[700],
-                        //                   ),
-                        //                   border: const UnderlineInputBorder(
-                        //                     borderSide: BorderSide(
-                        //                       color: Colors.grey,
-                        //                       width: 2,
-                        //                     ),
-                        //                   ),
-                        //                   contentPadding:
-                        //                       const EdgeInsets.only(bottom: 10),
-                        //                 ),
-                        //                 style: TextStyle(
-                        //                   fontSize: 15,
-                        //                   color: Colors.grey[700],
-                        //                 ),
-                        //                 keyboardType:
-                        //                     TextInputType.emailAddress,
-                        //               ),
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       ],
-                        //     ),
-                        //   ),
-                        // ),
 
                         // Contact Number
                         Padding(
@@ -431,7 +357,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       child: TextField(
                                         controller: contactNumberController,
                                         decoration: InputDecoration(
-                                          hintText: userData['contactNumber'],
+                                          hintText: adminData['contactNumber'],
                                           hintStyle: TextStyle(
                                             fontSize: 15,
                                             color: Colors.grey[700],
@@ -493,7 +419,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
 
                         // Change Password
-                        const Padding(            
+                        const Padding(
                           padding: EdgeInsets.only(top: 20, bottom: 10),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -508,75 +434,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             ],
                           ),
                         ),
-
-                        // New Password
-                        // TextField(
-                        //   controller: newPasswordController,
-                        //   obscureText: isObscure,
-                        //   decoration: InputDecoration(
-                        //     contentPadding: const EdgeInsets.all(8),
-                        //     border: OutlineInputBorder(
-                        //       borderRadius: BorderRadius.circular(10),
-                        //     ),
-                        //     focusedBorder: OutlineInputBorder(
-                        //       borderRadius: BorderRadius.circular(10),
-                        //       borderSide: const BorderSide(
-                        //         color: Colors.green,
-                        //         width: 2,
-                        //       ),
-                        //     ),
-                        //     prefixIcon: Icon(
-                        //       Icons.lock,
-                        //       size: 18,
-                        //       color: Colors.grey[400],
-                        //     ),
-                        //     suffixIcon: GestureDetector(
-                        //       onTap: () => setState(() {
-                        //         isObscure = !isObscure;
-                        //       }),
-                        //       child: Icon(
-                        //         isObscure
-                        //             ? Icons.visibility_off
-                        //             : Icons.visibility,
-                        //         size: 18,
-                        //         color: Colors.grey,
-                        //       ),
-                        //     ),
-                        //     hintText: 'New Password',
-                        //     hintStyle: TextStyle(
-                        //       color: Colors.grey[400],
-                        //     ),
-                        //   ),
-                        // ),
-
-                        // // email address
-                        // TextField(
-                        //   controller: emailController,
-                        //   decoration: InputDecoration(
-                        //     contentPadding: const EdgeInsets.all(8),
-                        //     border: OutlineInputBorder(
-                        //       borderRadius: BorderRadius.circular(10),
-                        //     ),
-                        //     focusedBorder: OutlineInputBorder(
-                        //       borderRadius: BorderRadius.circular(10),
-                        //       borderSide: const BorderSide(
-                        //         color: Colors.green,
-                        //       ),
-                        //     ),
-                        //     prefixIcon: Icon(
-                        //       Icons.mail,
-                        //       size: 18,
-                        //       color: Colors.grey[400],
-                        //     ),
-                        //     hintText: 'Email address',
-                        //     hintStyle: TextStyle(
-                        //       color: Colors.grey[400],
-                        //     ),
-                        //   ),
-                        //   onChanged: (value) => setState(() {
-                        //     isEmailValid = emailRegExp.hasMatch(value);
-                        //   }),
-                        // ),
 
                         // password change button
                         Padding(

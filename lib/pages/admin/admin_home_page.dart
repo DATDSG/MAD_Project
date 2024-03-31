@@ -1,4 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hostel_hive/pages/admin/admin_profile_page.dart';
+import 'package:hostel_hive/pages/admin/hostel.dart';
+import 'package:hostel_hive/pages/sign_in_page.dart';
+import 'package:hostel_hive/pages/user/home_page.dart';
 
 class AdminHomePage extends StatefulWidget {
   const AdminHomePage({super.key});
@@ -32,12 +37,17 @@ class _AdminHomePageState extends State<AdminHomePage> {
         actions: [
           GestureDetector(
             onTap: () {
-              
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AdminProfilePage(),
+                ),
+              );
             },
             child: Padding(
               padding: const EdgeInsets.only(right: 10),
               child: CircleAvatar(
-                radius: 22, 
+                radius: 22,
                 backgroundColor: Colors.green[700],
                 child: Container(
                   height: 35,
@@ -55,7 +65,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
         ],
       ),
 
-      // Navigation
+      // Navigation bar
       drawer: Drawer(
         backgroundColor: Colors.grey[100],
         child: ListView(
@@ -78,7 +88,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => const AdminHomePage(),
+                    builder: (context) => const HomePage(),
                   ),
                 );
               },
@@ -89,7 +99,12 @@ class _AdminHomePageState extends State<AdminHomePage> {
               leading: const Icon(Icons.person),
               title: const Text('Profile'),
               onTap: () {
-                
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AdminProfilePage(),
+                  ),
+                );
               },
             ),
 
@@ -105,6 +120,14 @@ class _AdminHomePageState extends State<AdminHomePage> {
               leading: const Icon(Icons.logout),
               title: const Text('Logout'),
               onTap: () async {
+                await FirebaseAuth.instance.signOut().then(
+                      (value) => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SignInPage(),
+                        ),
+                      ),
+                    );
               },
             ),
           ],
@@ -118,6 +141,12 @@ class _AdminHomePageState extends State<AdminHomePage> {
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
               child: GestureDetector(
                 onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ManageHostelsPage(),
+                    ),
+                  );
                 },
                 child: Container(
                   width: 200,
