@@ -96,6 +96,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return true;
   }
 
+  // alert box
   void _showErrorDialog(String title) {
     showDialog(
       context: context,
