@@ -1,3 +1,4 @@
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +16,10 @@ class _ProfilePageState extends State<ProfilePage> {
   //get current user
   final currentUser = FirebaseAuth.instance.currentUser!;
 
+  bool animate = true;
+
   // Sign Out Function
-  void signOut() async {
+  Future signOut() async {
     await FirebaseAuth.instance.signOut().then(
           (value) => Navigator.push(
             context,
@@ -69,23 +72,33 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: [
                       // profile picture
                       Center(
-                        child: CircleAvatar(
-                          radius: 59,
-                          backgroundColor: Colors.green[400],
-                          child: Container(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                              shape: BoxShape.circle,
-                              image: profilePictureUrl != null
-                                  ? DecorationImage(
-                                      image: NetworkImage(profilePictureUrl),
-                                    )
-                                  : const DecorationImage(
-                                      image: AssetImage(
-                                          'assets/images/profile.jpg'),
-                                    ),
+                        child: AvatarGlow(
+                          startDelay: const Duration(milliseconds: 1000),
+                          glowColor: Colors.green,
+                          glowShape: BoxShape.circle,
+                          animate: animate,
+                          curve: Curves.easeInOut,
+                          child: CircleAvatar(
+                            radius: 59,
+                            backgroundColor: Colors.green[400],
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: Colors.grey,
+                                shape: BoxShape.circle,
+                                image: profilePictureUrl != null
+                                    ? DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: NetworkImage(
+                                          profilePictureUrl,
+                                        ),
+                                      )
+                                    : const DecorationImage(
+                                        image: AssetImage(
+                                            'assets/images/profile.jpg'),
+                                      ),
+                              ),
                             ),
                           ),
                         ),
@@ -338,7 +351,9 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           } else {
             return const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                color: Colors.green,
+              ),
             );
           }
         }),
@@ -346,3 +361,34 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
+
+
+
+
+
+ 
+
+/*
+Center(
+                        child: CircleAvatar(
+                          radius: 59,
+                          backgroundColor: Colors.green[400],
+                          child: Container(
+                            height: 100,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              shape: BoxShape.circle,
+                              image: profilePictureUrl != null
+                                  ? DecorationImage(
+                                      image: NetworkImage(profilePictureUrl),
+                                    )
+                                  : const DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/profile.jpg'),
+                                    ),
+                            ),
+                          ),
+                        ),
+                      ),
+ */

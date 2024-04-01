@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hostel_hive/pages/google_map.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HostelDetailsPage extends StatefulWidget {
   final DocumentSnapshot hostelData;
@@ -16,7 +17,18 @@ class HostelDetailsPage extends StatefulWidget {
 }
 
 class _HostelDetailsPageState extends State<HostelDetailsPage> {
+  // get current user
   final currentUser = FirebaseAuth.instance.currentUser!;
+
+  // call function
+  void _initiateCall(String phoneNumber) async {
+    final url = 'tel:$phoneNumber';
+    if (await canLaunchUrl(url as Uri)) {
+      await launchUrl(url as Uri);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +36,11 @@ class _HostelDetailsPageState extends State<HostelDetailsPage> {
       backgroundColor: Colors.grey[50],
       // Call Button
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          // Retrieve the phone number from Firestore and initiate a phone call
+          final phoneNumber = widget.hostelData['contactNumber'];
+          _initiateCall(phoneNumber);
+        },
         backgroundColor: Colors.green[400],
         child: const Icon(
           Icons.phone,
@@ -218,13 +234,13 @@ class _HostelDetailsPageState extends State<HostelDetailsPage> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        
+
                         Text(
                           description,
                           style: const TextStyle(
                               fontSize: 15, color: Colors.black),
                         ),
-                        
+
                         const Padding(
                           padding: EdgeInsets.only(top: 5),
                           child: Text(

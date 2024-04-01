@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hostel_hive/pages/admin/hostel.dart';
@@ -13,6 +14,9 @@ class AdminHomePage extends StatefulWidget {
 }
 
 class _AdminHomePageState extends State<AdminHomePage> {
+  // get the current user
+  final user = FirebaseAuth.instance.currentUser!;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,27 +43,55 @@ class _AdminHomePageState extends State<AdminHomePage> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const ProfilePage(),
-                ),
+                MaterialPageRoute(builder: (context) => const ProfilePage()),
               );
             },
-            child: Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: CircleAvatar(
-                radius: 22,
-                backgroundColor: Colors.green[700],
-                child: Container(
-                  height: 35,
-                  width: 35,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/profile.jpg'),
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('Users')
+                  .doc(user.email)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  // get user data
+                  final userData =
+                      snapshot.data!.data() as Map<String, dynamic>;
+
+                  // get profile picture url
+                  final profilePictureUrl = userData['profilePictureUrl'];
+
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: CircleAvatar(
+                      radius: 22,
+                      backgroundColor: Colors.green[700],
+                      child: Container(
+                        height: 35,
+                        width: 35,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: profilePictureUrl != null
+                              ? DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(profilePictureUrl),
+                                )
+                              : const DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image:
+                                      AssetImage('assets/images/profile.jpg'),
+                                ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
+                  );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.green[400],
+                    ),
+                  );
+                }
+              },
             ),
           ),
         ],

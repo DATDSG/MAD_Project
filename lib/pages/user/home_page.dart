@@ -60,8 +60,8 @@ class _HomePageState extends State<HomePage> {
                   return Padding(
                     padding: const EdgeInsets.only(right: 10),
                     child: CircleAvatar(
-                      radius: 22, // Adjust the radius as needed
-                      backgroundColor: Colors.green[700], // Border color
+                      radius: 22,
+                      backgroundColor: Colors.green[700], 
                       child: Container(
                         height: 35,
                         width: 35,
@@ -82,8 +82,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.green[400],
+                    ),
                   );
                 }
               },
@@ -96,7 +98,6 @@ class _HomePageState extends State<HomePage> {
       drawer: Drawer(
         backgroundColor: Colors.grey[100],
         child: ListView(
-          
           children: [
             // Logo
             DrawerHeader(
