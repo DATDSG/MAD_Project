@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hostel_hive/pages/admin/admin_profile_page.dart';
 import 'package:hostel_hive/pages/admin/hostel.dart';
 import 'package:hostel_hive/pages/sign_in_page.dart';
 import 'package:hostel_hive/pages/user/home_page.dart';
+import 'package:hostel_hive/pages/user/profile_page.dart';
 
 class AdminHomePage extends StatefulWidget {
   const AdminHomePage({super.key});
@@ -40,7 +40,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const AdminProfilePage(),
+                  builder: (context) => const ProfilePage(),
                 ),
               );
             },
@@ -102,7 +102,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const AdminProfilePage(),
+                    builder: (context) => const ProfilePage(),
                   ),
                 );
               },

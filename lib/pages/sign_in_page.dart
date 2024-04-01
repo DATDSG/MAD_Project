@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hostel_hive/pages/admin/admin_home_page.dart';
+import 'package:hostel_hive/pages/password_reset_page.dart';
 import 'package:hostel_hive/pages/sign_up_page.dart';
 import 'package:hostel_hive/pages/user/home_page.dart';
 import 'package:hostel_hive/services/auth_service.dart';
@@ -18,6 +21,7 @@ class _SignInPageState extends State<SignInPage> {
 
   bool isObscure = true;
   bool isEmailValid = true;
+  bool isAdminUser = false;
 
   // Sign In Function
   Future signIn() async {
@@ -34,14 +38,29 @@ class _SignInPageState extends State<SignInPage> {
     );
 
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
+
       popCircularIndicator();
 
-      // navigate to home page
-      navigateToHomePage();
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(userCredential.user!.email)
+          .get();
+
+      if (userSnapshot.exists) {
+        final userData = userSnapshot.data();
+        if (userData is Map<String, dynamic> &&
+            userData.containsKey('isAdmin')) {
+          isAdminUser = userData['isAdmin'] ?? false;
+
+          // navigate to home page
+          navigateToHomePage();
+        }
+      }
     } catch (e) {
       popCircularIndicator();
 
@@ -65,18 +84,30 @@ class _SignInPageState extends State<SignInPage> {
     }
   }
 
+  // pop the circular indicator
   void popCircularIndicator() {
     Navigator.pop(context);
   }
 
   // navigate to Home page
   void navigateToHomePage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const HomePage(),
-      ),
-    );
+    if (isAdminUser) {
+      // Navigate to admin home page if the user is an admin
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const AdminHomePage(),
+        ),
+      );
+    } else {
+      // Navigate to regular user home page if the user is not an admin
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomePage(),
+        ),
+      );
+    }
   }
 
   // alert dialog
@@ -197,6 +228,32 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                 ),
 
+                const SizedBox(
+                  height: 5,
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ResetPassword(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Forgot Password?',
+                        style: TextStyle(
+                          color: Colors.green[400],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                
                 const SizedBox(
                   height: 20,
                 ),

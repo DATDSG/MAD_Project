@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hostel_hive/pages/admin/admin_home_page.dart';
 import 'package:hostel_hive/pages/user/home_page.dart';
 import 'package:hostel_hive/pages/sign_in_page.dart';
 
@@ -24,7 +25,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   bool isObscure = true;
   bool isEmailValid = true;
-  bool isChecked = false;
+  bool isAdmin = false;
   bool isPasswordMatch = true;
   bool isValidContactNumber = true;
 
@@ -61,9 +62,10 @@ class _SignUpPageState extends State<SignUpPage> {
           .set({
         'name': nameController.text,
         'contactNumber': contactNumberController.text,
+        'isAdmin': isAdmin,
       });
 
-      pop();
+      popLoadingCircle();
 
       // Navigate to home page after successful sign-up
       navigateToHome();
@@ -73,7 +75,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   // pop loding circle
-  void pop() {
+  void popLoadingCircle() {
     Navigator.pop(context);
   }
 
@@ -82,8 +84,7 @@ class _SignUpPageState extends State<SignUpPage> {
         !emailRegExp.hasMatch(emailController.text) ||
         passwordController.text.isEmpty ||
         confirmPasswordController.text.isEmpty ||
-        !contactNumberRegex.hasMatch(contactNumberController.text) ||
-        !isChecked) {
+        !contactNumberRegex.hasMatch(contactNumberController.text)) {
       _showErrorDialog('Please fill all fields correctly.');
       return false;
     }
@@ -116,12 +117,21 @@ class _SignUpPageState extends State<SignUpPage> {
 
   // navigate to Home page
   void navigateToHome() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const HomePage(),
-      ),
-    );
+    if (isAdmin) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const AdminHomePage(),
+        ),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomePage(),
+        ),
+      );
+    }
   }
 
   @override
@@ -331,12 +341,12 @@ class _SignUpPageState extends State<SignUpPage> {
                   }),
                 ),
 
-                // Check Box
+                // Check Box - admin sign up
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Checkbox(
-                      value: isChecked,
+                      value: isAdmin,
                       fillColor: MaterialStateColor.resolveWith((states) {
                         if (states.contains(MaterialState.selected)) {
                           return Colors.green;
@@ -344,13 +354,39 @@ class _SignUpPageState extends State<SignUpPage> {
                         return Colors.white;
                       }),
                       onChanged: (value) => setState(() {
-                        isChecked = !isChecked;
+                        isAdmin = !isAdmin;
                       }),
                     ),
                     const Padding(
                       padding: EdgeInsets.only(top: 15),
                       child: Text(
-                        'I agree to the terms and conditions',
+                        'Sign Up as an Admin',
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Admin Sign Up'),
+                              content: const Text(
+                                  'By signing up as an admin, you will be able to add hostels and manage hostels etc.'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.info_outline_rounded,
+                        color: Colors.red,
                       ),
                     ),
                   ],
