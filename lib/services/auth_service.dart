@@ -4,22 +4,22 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class AuthService {
   // google sign in
-  signInwithGoogle() async {
-    // interactive sign in process
-    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+  Future<UserCredential> signInWithGoogle() async {
+  // Trigger the authentication flow
+  final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-    // obtain auth details from request
-    final GoogleSignInAuthentication gAuth = await gUser!.authentication;
+  // Obtain the auth details from the request
+  final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
 
-    // crate new credentials for user
-    final googleCredential = GoogleAuthProvider.credential(
-      accessToken: gAuth.accessToken,
-      idToken: gAuth.idToken,
-    );
+  // Create a new credential
+  final credential = GoogleAuthProvider.credential(
+    accessToken: googleAuth?.accessToken,
+    idToken: googleAuth?.idToken,
+  );
 
-    // sign in process
-    return await FirebaseAuth.instance.signInWithCredential(googleCredential);
-  }
+  // Once signed in, return the UserCredential
+  return await FirebaseAuth.instance.signInWithCredential(credential);
+}
 
   // facebook sign in
   Future<UserCredential> signInWithFacebook() async {

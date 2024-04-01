@@ -272,7 +272,7 @@ class _SignInPageState extends State<SignInPage> {
                       width: 160,
                       child: ElevatedButton(
                         onPressed: () {
-                          AuthService().signInwithGoogle();
+                          AuthService().signInWithGoogle();
                         },
                         style: ButtonStyle(
                           shadowColor: MaterialStateProperty.all(Colors.grey),
