@@ -320,7 +320,9 @@ class _SignInPageState extends State<SignInPage> {
                       height: 45,
                       width: 160,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          AuthService().signInWithFacebook();
+                        },
                         style: ButtonStyle(
                           shadowColor: MaterialStateProperty.all(Colors.grey),
                           backgroundColor: MaterialStateProperty.all(
