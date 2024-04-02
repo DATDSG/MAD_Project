@@ -61,7 +61,6 @@ class _SignUpPageState extends State<SignUpPage> {
           .set({
         'name': nameController.text,
         'contactNumber': contactNumberController.text,
-        'isChecked': isChecked,
         'isAdmin': false,
       });
 
@@ -84,7 +83,8 @@ class _SignUpPageState extends State<SignUpPage> {
         !emailRegExp.hasMatch(emailController.text) ||
         passwordController.text.isEmpty ||
         confirmPasswordController.text.isEmpty ||
-        !contactNumberRegex.hasMatch(contactNumberController.text)) {
+        !contactNumberRegex.hasMatch(contactNumberController.text) ||
+        isChecked != true) {
       _showErrorDialog('Please fill all fields correctly.');
       return false;
     }
@@ -117,14 +117,12 @@ class _SignUpPageState extends State<SignUpPage> {
 
   // navigate to Home page
   void navigateToHome() {
-    if (isChecked) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomePage(),
-        ),
-      );
-    }
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const HomePage(),
+      ),
+    );
   }
 
   @override
