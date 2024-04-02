@@ -25,7 +25,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   bool isObscure = true;
   bool isEmailValid = true;
-  bool isAdmin = false;
+  bool isChecked = false;
   bool isPasswordMatch = true;
   bool isValidContactNumber = true;
 
@@ -62,7 +62,7 @@ class _SignUpPageState extends State<SignUpPage> {
           .set({
         'name': nameController.text,
         'contactNumber': contactNumberController.text,
-        'isAdmin': isAdmin,
+        'isChecked': isChecked,
       });
 
       popLoadingCircle();
@@ -117,20 +117,13 @@ class _SignUpPageState extends State<SignUpPage> {
 
   // navigate to Home page
   void navigateToHome() {
-    if (isAdmin) {
+    if(isChecked){
       Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const AdminHomePage(),
-        ),
-      );
-    } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomePage(),
-        ),
-      );
+      context,
+      MaterialPageRoute(
+        builder: (context) => const HomePage(),
+      ),
+    );
     }
   }
 
@@ -346,7 +339,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Checkbox(
-                      value: isAdmin,
+                      value: isChecked,
                       fillColor: MaterialStateColor.resolveWith((states) {
                         if (states.contains(MaterialState.selected)) {
                           return Colors.green;
@@ -354,13 +347,13 @@ class _SignUpPageState extends State<SignUpPage> {
                         return Colors.white;
                       }),
                       onChanged: (value) => setState(() {
-                        isAdmin = !isAdmin;
+                        isChecked = !isChecked;
                       }),
                     ),
                     const Padding(
                       padding: EdgeInsets.only(top: 15),
                       child: Text(
-                        'Sign Up as an Admin',
+                        'I Agree Terms and Conditions',
                       ),
                     ),
                     IconButton(
