@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hostel_hive/pages/admin/admin_home_page.dart';
 import 'package:hostel_hive/pages/user/home_page.dart';
 import 'package:hostel_hive/pages/sign_in_page.dart';
 
@@ -63,6 +62,7 @@ class _SignUpPageState extends State<SignUpPage> {
         'name': nameController.text,
         'contactNumber': contactNumberController.text,
         'isChecked': isChecked,
+        'isAdmin': false,
       });
 
       popLoadingCircle();
@@ -117,13 +117,13 @@ class _SignUpPageState extends State<SignUpPage> {
 
   // navigate to Home page
   void navigateToHome() {
-    if(isChecked){
+    if (isChecked) {
       Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const HomePage(),
-      ),
-    );
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomePage(),
+        ),
+      );
     }
   }
 
@@ -354,32 +354,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       padding: EdgeInsets.only(top: 15),
                       child: Text(
                         'I Agree Terms and Conditions',
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('Admin Sign Up'),
-                              content: const Text(
-                                  'By signing up as an admin, you will be able to add hostels and manage hostels etc.'),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('OK'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      icon: const Icon(
-                        Icons.info_outline_rounded,
-                        color: Colors.red,
                       ),
                     ),
                   ],

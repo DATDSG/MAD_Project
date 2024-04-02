@@ -53,8 +53,8 @@ class _MapPageState extends State<MapPage> {
     return const Center(
       child: CircularProgressIndicator(
         strokeWidth: 4.0,
-        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-        backgroundColor: Colors.transparent,
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+        backgroundColor: Colors.green,
         value: null, // This makes it indeterminate
         semanticsValue: 'Loading...',
       ),
