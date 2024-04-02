@@ -21,7 +21,7 @@ class _ProfilePageState extends State<ProfilePage> {
   // Sign Out Function
   Future signOut() async {
     await FirebaseAuth.instance.signOut().then(
-          (value) => Navigator.push(
+          (value) => Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => const SignInPage(),

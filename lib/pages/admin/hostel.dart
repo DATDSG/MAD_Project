@@ -12,6 +12,15 @@ class ManageHostelsPage extends StatefulWidget {
 }
 
 class _ManageHostelsPageState extends State<ManageHostelsPage> {
+  Widget _buildNoHostelsWidget() {
+    return const Center(
+      child: Text(
+        'Add New Hostels',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,6 +69,11 @@ class _ManageHostelsPageState extends State<ManageHostelsPage> {
                 child: CircularProgressIndicator(),
               );
             }
+
+            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+              return _buildNoHostelsWidget();
+            }
+
             if (snapshot.hasData) {
               // get the all hostels from database an add hostels to the list
               final List<DocumentSnapshot> hostels = snapshot.data!.docs;
@@ -169,12 +183,7 @@ class _ManageHostelsPageState extends State<ManageHostelsPage> {
               );
             } else {
               return const Center(
-                child: Text(
-                  'Add New Hostel',
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
+                child: Text('Add new Hostel'),
               );
             }
           },

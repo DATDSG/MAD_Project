@@ -29,9 +29,9 @@ class _SignInPageState extends State<SignInPage> {
     showDialog(
       context: context,
       builder: (context) {
-        return Center(
+        return const Center(
           child: CircularProgressIndicator(
-            color: Colors.green[400],
+            color: Color.fromARGB(255, 60, 255, 0),
           ),
         );
       },
@@ -253,7 +253,7 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                   ],
                 ),
-                
+
                 const SizedBox(
                   height: 20,
                 ),

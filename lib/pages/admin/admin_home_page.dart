@@ -153,7 +153,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
               title: const Text('Logout'),
               onTap: () async {
                 await FirebaseAuth.instance.signOut().then(
-                      (value) => Navigator.push(
+                      (value) => Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const SignInPage(),

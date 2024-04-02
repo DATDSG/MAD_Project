@@ -39,6 +39,28 @@ class _MapPageState extends State<MapPage> {
     });
   }
 
+  Widget _buildNoHostelsWidget() {
+    return const Center(
+      child: Text(
+        'No Hostels Available!',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  // circular progress indicator
+  Widget _buildGradientCircularProgressIndicator() {
+    return const Center(
+      child: CircularProgressIndicator(
+        strokeWidth: 4.0,
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+        backgroundColor: Colors.transparent,
+        value: null, // This makes it indeterminate
+        semanticsValue: 'Loading...',
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,7 +128,11 @@ class _MapPageState extends State<MapPage> {
                 ),
               ),
             ),
-            const SizedBox(height: 10),
+
+            const SizedBox(
+              height: 10,
+            ),
+
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
@@ -114,7 +140,11 @@ class _MapPageState extends State<MapPage> {
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return _buildGradientCircularProgressIndicator();
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return _buildNoHostelsWidget();
                   }
 
                   if (snapshot.hasData) {
@@ -227,11 +257,7 @@ class _MapPageState extends State<MapPage> {
                       },
                     );
                   } else {
-                    return const Center(
-                      child: Text(
-                        'No Hostels Available',
-                      ),
-                    );
+                    return _buildNoHostelsWidget();
                   }
                 },
               ),
