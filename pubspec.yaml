@@ -50,6 +50,7 @@ dependencies:
   flutter_facebook_auth: ^6.1.1
   avatar_glow: ^3.0.1
   url_launcher: ^6.2.5
+  google_nav_bar: ^5.0.6
     
 dev_dependencies:
   flutter_test:

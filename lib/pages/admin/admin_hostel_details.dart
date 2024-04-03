@@ -15,6 +15,34 @@ class AdminHostelDetailsPage extends StatefulWidget {
 }
 
 class _AdminHostelDetailsPageState extends State<AdminHostelDetailsPage> {
+  // alert dialog
+  void alertDialog(){
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Hostel'),
+          content: const Text('Are you sure you want to delete this hostel?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('No'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                deleteHostelFunction();
+              },
+              child: const Text('Yes'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   // delete hostel
   Future deleteHostel() async {
     await FirebaseFirestore.instance
@@ -404,7 +432,7 @@ class _AdminHostelDetailsPageState extends State<AdminHostelDetailsPage> {
                     height: 45,
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: deleteHostelFunction,
+                      onPressed: alertDialog,
                       style: ButtonStyle(
                         shadowColor: MaterialStateProperty.all(Colors.grey),
                         backgroundColor: MaterialStateProperty.all(

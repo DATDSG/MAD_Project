@@ -118,7 +118,7 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               leading: const Icon(Icons.home),
               title: const Text(
-                'H O M E',
+                'Home',
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                 ),
@@ -140,7 +140,7 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               leading: const Icon(Icons.person),
               title: const Text(
-                'P R O F I L E',
+                'Profile',
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                 ),
@@ -162,7 +162,7 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               leading: const Icon(Icons.info),
               title: const Text(
-                'A B O U T',
+                'About',
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                 ),
@@ -178,7 +178,7 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text(
-                'L O G  O U T',
+                'Log Out',
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                 ),

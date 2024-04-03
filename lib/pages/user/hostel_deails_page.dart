@@ -23,8 +23,8 @@ class _HostelDetailsPageState extends State<HostelDetailsPage> {
   // call function
   void _initiateCall(String phoneNumber) async {
     final url = 'tel:$phoneNumber';
-    if (await canLaunchUrl(url as Uri)) {
-      await launchUrl(url as Uri);
+    if (await canLaunch(url)) {
+      await launch(url);
     } else {
       throw 'Could not launch $url';
     }

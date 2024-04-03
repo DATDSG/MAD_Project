@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:hostel_hive/pages/admin/add_hostel.dart';
@@ -12,6 +13,8 @@ class ManageHostelsPage extends StatefulWidget {
 }
 
 class _ManageHostelsPageState extends State<ManageHostelsPage> {
+  final user = FirebaseAuth.instance.currentUser!;
+
   Widget _buildNoHostelsWidget() {
     return const Center(
       child: Text(
@@ -62,7 +65,7 @@ class _ManageHostelsPageState extends State<ManageHostelsPage> {
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('Hostels').snapshots(),
+          stream: FirebaseFirestore.instance.collection('Hostels').where('userId', isEqualTo: user.uid).snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(

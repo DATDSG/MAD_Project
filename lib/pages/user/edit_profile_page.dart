@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:hostel_hive/pages/sign_in_page.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -84,6 +85,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
         contactNumberController.clear();
       });
     }
+  }
+
+  // delete profile
+  Future deleteAccount() async {
+    signOut();
+    deletedAlertDialog();
+
+    await currentUser.delete();
+    await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(currentUser.email)
+        .delete();
   }
 
   // change password
@@ -169,6 +182,56 @@ class _EditProfilePageState extends State<EditProfilePage> {
         profilePictureUrl = imageUrl;
       });
     }
+  }
+
+  // alert dialog
+  void alertDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete Account'),
+          content: const Text('Are you sure you want to delete your account?'),
+          actions: [
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Delete'),
+              onPressed: () {
+                deleteAccount();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // successfully deleted alrert dialog
+  void deletedAlertDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          content: Text('Your Account successfully Deleted!'),
+        );
+      },
+    );
+  }
+
+  // Navigate to the sign in page
+  void signOut() {
+    FirebaseAuth.instance.signOut();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const SignInPage(),
+      ),
+    );
   }
 
   @override
@@ -480,6 +543,39 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             ),
                             child: const Text(
                               'Save',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      // delete profile button
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: SizedBox(
+                          height: 45,
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: alertDialog,
+                            style: ButtonStyle(
+                              shadowColor:
+                                  MaterialStateProperty.all(Colors.grey),
+                              backgroundColor: MaterialStateProperty.all(
+                                Colors.red[400],
+                              ),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                            child: const Text(
+                              'Delete account',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,

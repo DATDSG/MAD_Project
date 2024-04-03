@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -23,6 +24,7 @@ class _AddHostelPageState extends State<AddHostelPage> {
   final TextEditingController priceController = TextEditingController();
 
   final userCollection = FirebaseFirestore.instance.collection('Hostels');
+  final user = FirebaseAuth.instance.currentUser!;
 
   bool isWifiChecked = false;
   bool isLaundryChecked = false;
@@ -53,6 +55,7 @@ class _AddHostelPageState extends State<AddHostelPage> {
         .collection('Hostels')
         .doc(nameController.text)
         .set({
+      'userId': user.uid,
       'hostelName': nameController.text,
       'address': addressController.text,
       'contactNumber': contactNumberController.text,
@@ -110,7 +113,7 @@ class _AddHostelPageState extends State<AddHostelPage> {
   Future<void> uploadHostelImages() async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(
-      source: ImageSource.camera,
+      source: ImageSource.gallery,
     );
     if (image == null) return;
 
