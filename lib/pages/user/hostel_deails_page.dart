@@ -22,9 +22,12 @@ class _HostelDetailsPageState extends State<HostelDetailsPage> {
 
   // call function
   void _initiateCall(String phoneNumber) async {
-    final url = 'tel:$phoneNumber';
-    if (await canLaunch(url)) {
-      await launch(url);
+    final Uri url = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
     } else {
       throw 'Could not launch $url';
     }
@@ -105,7 +108,7 @@ class _HostelDetailsPageState extends State<HostelDetailsPage> {
                   child: SizedBox(
                     width: double.infinity,
                     height: 200,
-                    child: googleMap(),
+                    child: GoogleMapPage(),
                   ),
                 ),
 

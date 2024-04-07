@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class googleMap extends StatefulWidget {
-  const googleMap({super.key});
+class GoogleMapPage extends StatefulWidget {
+  const GoogleMapPage({super.key});
 
   @override
-  State<googleMap> createState() => _googleMapState();
+  State<GoogleMapPage> createState() => _GoogleMapPageState();
 }
 
-class _googleMapState extends State<googleMap> {
+class _GoogleMapPageState extends State<GoogleMapPage> {
   static const _initialCameraPosition = CameraPosition(
     target: LatLng(6.8211290, 80.0409841),
     zoom: 15,
