@@ -326,7 +326,7 @@ class _SignInPageState extends State<SignInPage> {
                     // google sign in
                     SizedBox(
                       height: 45,
-                      width: 160,
+                      width: 150,
                       child: ElevatedButton(
                         onPressed: () {
                           AuthService().signInWithGoogle();
@@ -375,7 +375,7 @@ class _SignInPageState extends State<SignInPage> {
                     // facebook sign in
                     SizedBox(
                       height: 45,
-                      width: 160,
+                      width: 150,
                       child: ElevatedButton(
                         onPressed: () {
                           AuthService().signInWithFacebook();

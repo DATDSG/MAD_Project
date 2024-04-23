@@ -148,6 +148,33 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
+  void passwordChangeAlertDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Change Password'),
+          content: const Text('Are you sure you want to change your password?'),
+          actions: [
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Change Password'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                changePassword();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   // update profile picture
   // Pick image from device
   Future<void> changeProfilePicture() async {
@@ -361,6 +388,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                           fontSize: 15,
                                           color: Colors.grey[700],
                                         ),
+                                        focusedBorder: const UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: Colors.green,
+                                          ),
+                                        ),
                                         border: const UnderlineInputBorder(
                                           borderSide: BorderSide(
                                             color: Colors.grey,
@@ -427,6 +459,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         hintStyle: TextStyle(
                                           fontSize: 15,
                                           color: Colors.grey[700],
+                                        ),
+                                        focusedBorder: const UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: Colors.green,
+                                          ),
                                         ),
                                         border: const UnderlineInputBorder(
                                           borderSide: BorderSide(
@@ -541,7 +578,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           height: 45,
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: changePassword,
+                            onPressed: passwordChangeAlertDialog,
                             style: ButtonStyle(
                               shadowColor:
                                   MaterialStateProperty.all(Colors.grey),

@@ -17,6 +17,44 @@ class _AdminHomePageState extends State<AdminHomePage> {
   // get the current user
   final user = FirebaseAuth.instance.currentUser!;
 
+  Future signOut() async {
+    await FirebaseAuth.instance.signOut().then(
+          (value) => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const SignInPage(),
+            ),
+          ),
+        );
+  }
+  
+  void alertDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Log Out'),
+          content: const Text('Are you sure you want to Sign Out?'),
+          actions: [
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Yes'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                signOut();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,16 +189,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Logout'),
-              onTap: () async {
-                await FirebaseAuth.instance.signOut().then(
-                      (value) => Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SignInPage(),
-                        ),
-                      ),
-                    );
-              },
+              onTap: alertDialog,
             ),
           ],
         ),

@@ -407,6 +407,11 @@ class _EditHostelsPageState extends State<EditHostelsPage> {
                                       fontSize: 15,
                                       color: Colors.grey[700],
                                     ),
+                                    focusedBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.green,
+                                      ),
+                                    ),
                                     border: const UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: Colors.grey,
@@ -475,6 +480,11 @@ class _EditHostelsPageState extends State<EditHostelsPage> {
                                     hintStyle: TextStyle(
                                       fontSize: 15,
                                       color: Colors.grey[700],
+                                    ),
+                                    focusedBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.green,
+                                      ),
                                     ),
                                     border: const UnderlineInputBorder(
                                       borderSide: BorderSide(
@@ -545,6 +555,11 @@ class _EditHostelsPageState extends State<EditHostelsPage> {
                                       fontSize: 15,
                                       color: Colors.grey[700],
                                     ),
+                                    focusedBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.green,
+                                      ),
+                                    ),
                                     border: const UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: Colors.grey,
@@ -614,6 +629,11 @@ class _EditHostelsPageState extends State<EditHostelsPage> {
                                       fontSize: 15,
                                       color: Colors.grey[700],
                                     ),
+                                    focusedBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.green,
+                                      ),
+                                    ),
                                     border: const UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: Colors.grey,
@@ -682,6 +702,11 @@ class _EditHostelsPageState extends State<EditHostelsPage> {
                                     hintStyle: TextStyle(
                                       fontSize: 15,
                                       color: Colors.grey[700],
+                                    ),
+                                    focusedBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.green,
+                                      ),
                                     ),
                                     border: const UnderlineInputBorder(
                                       borderSide: BorderSide(

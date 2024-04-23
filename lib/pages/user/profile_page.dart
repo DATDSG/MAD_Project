@@ -30,6 +30,34 @@ class _ProfilePageState extends State<ProfilePage> {
         );
   }
 
+  void alertDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Log Out'),
+          content: const Text('Are you sure you want to Sign Out?'),
+          actions: [
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Yes'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                signOut();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -307,7 +335,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           height: 45,
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: signOut,
+                            onPressed: alertDialog,
                             style: ButtonStyle(
                               shadowColor:
                                   MaterialStateProperty.all(Colors.grey),

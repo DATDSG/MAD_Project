@@ -195,6 +195,11 @@ class _AddHostelPageState extends State<AddHostelPage> {
                                   width: 2,
                                 ),
                               ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.green,
+                                ),
+                              ),
                               contentPadding: EdgeInsets.only(bottom: 15),
                             ),
                             style: TextStyle(
@@ -256,6 +261,11 @@ class _AddHostelPageState extends State<AddHostelPage> {
                                 borderSide: BorderSide(
                                   color: Colors.grey,
                                   width: 2,
+                                ),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.green,
                                 ),
                               ),
                               contentPadding: EdgeInsets.only(bottom: 15),
@@ -321,6 +331,11 @@ class _AddHostelPageState extends State<AddHostelPage> {
                                   width: 2,
                                 ),
                               ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.green,
+                                ),
+                              ),
                               contentPadding: EdgeInsets.only(bottom: 15),
                             ),
                             style: TextStyle(
@@ -382,6 +397,11 @@ class _AddHostelPageState extends State<AddHostelPage> {
                                 borderSide: BorderSide(
                                   color: Colors.grey,
                                   width: 2,
+                                ),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.green,
                                 ),
                               ),
                               contentPadding: EdgeInsets.only(bottom: 15),
@@ -448,6 +468,11 @@ class _AddHostelPageState extends State<AddHostelPage> {
                                 ),
                               ),
                               contentPadding: EdgeInsets.only(bottom: 15),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.green,
+                                ),
+                              ),
                             ),
                             style: TextStyle(
                               fontSize: 15,

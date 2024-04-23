@@ -65,7 +65,10 @@ class _ManageHostelsPageState extends State<ManageHostelsPage> {
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('Hostels').where('userId', isEqualTo: user.uid).snapshots(),
+          stream: FirebaseFirestore.instance
+              .collection('Hostels')
+              .where('userId', isEqualTo: user.uid)
+              .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -137,44 +140,45 @@ class _ManageHostelsPageState extends State<ManageHostelsPage> {
                               ),
                             ),
 
-                            // hostel name
-                            Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // Name
-                                  Text(
-                                    hostelName,
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-
-                                  // Rating bar
-                                  RatingBar.builder(
-                                    initialRating: 3,
-                                    minRating: 1,
-                                    maxRating: 3,
-                                    direction: Axis.horizontal,
-                                    itemCount: 5,
-                                    itemPadding: const EdgeInsets.only(
-                                      left: 0.1,
-                                    ),
-                                    itemBuilder: (context, _) =>
-                                        Transform.scale(
-                                      scale: 0.8,
-                                      child: const Icon(
-                                        Icons.star,
-                                        color: Colors.amber,
+                            // Hostel name and Rating
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Hostel Name
+                                    Text(
+                                      hostelName ?? '',
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    ignoreGestures: true,
-                                    onRatingUpdate: (rating) => () {},
-                                  ),
-                                ],
+
+                                    // Rating bar
+                                    RatingBar.builder(
+                                      initialRating: 3,
+                                      minRating: 1,
+                                      maxRating: 3,
+                                      direction: Axis.horizontal,
+                                      itemCount: 5,
+                                      itemPadding:
+                                          const EdgeInsets.only(left: 0.1),
+                                      itemBuilder: (context, _) =>
+                                          Transform.scale(
+                                        scale: 0.8,
+                                        child: const Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                        ),
+                                      ),
+                                      ignoreGestures: true,
+                                      onRatingUpdate: (rating) {},
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],

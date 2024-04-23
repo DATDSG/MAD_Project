@@ -16,6 +16,44 @@ class _HomePageState extends State<HomePage> {
   // get current user
   final user = FirebaseAuth.instance.currentUser!;
 
+  Future signOut() async {
+    await FirebaseAuth.instance.signOut().then(
+          (value) => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const SignInPage(),
+            ),
+          ),
+        );
+  }
+
+  void alertDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Log Out'),
+          content: const Text('Are you sure you want to Sign Out?'),
+          actions: [
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Yes'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                signOut();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +99,7 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.only(right: 10),
                     child: CircleAvatar(
                       radius: 22,
-                      backgroundColor: Colors.green[700], 
+                      backgroundColor: Colors.green[700],
                       child: Container(
                         height: 35,
                         width: 35,
@@ -183,15 +221,7 @@ class _HomePageState extends State<HomePage> {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              onTap: () async {
-                await FirebaseAuth.instance.signOut().then(
-                      (value) => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const SignInPage(),
-                        ),
-                      ),
-                    );
-              },
+              onTap: alertDialog,
             ),
           ],
         ),
