@@ -1,9 +1,14 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditHostelsPage extends StatefulWidget {
   final DocumentSnapshot hostelData;
-  
+
   const EditHostelsPage({
     super.key,
     required this.hostelData,
@@ -14,6 +19,9 @@ class EditHostelsPage extends StatefulWidget {
 }
 
 class _EditHostelsPageState extends State<EditHostelsPage> {
+  List<Uint8List> pickedImages = [];
+  String? hostelImageUrl;
+
   final TextEditingController nameController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController contactNumberController = TextEditingController();
@@ -269,6 +277,44 @@ class _EditHostelsPageState extends State<EditHostelsPage> {
     }
   }
 
+// update hostel images
+  Future updateHostelImages() async {
+    // add list of hostel images to database
+    final List<String> imageUrls = [];
+
+    for (final image in pickedImages) {
+      final String imageName = DateTime.now().millisecondsSinceEpoch.toString();
+      final Reference storageRef =
+          FirebaseStorage.instance.ref().child('hostel_images/$imageName');
+      final UploadTask uploadTask = storageRef.putData(image);
+      await uploadTask.whenComplete(() => null);
+      final String imageUrl = await storageRef.getDownloadURL();
+
+      imageUrls.add(imageUrl);
+
+      FirebaseFirestore.instance
+          .collection('Hostels')
+          .doc(nameController.text)
+          .set({
+        'hostelImageUrl': imageUrls,
+      });
+    }
+  }
+
+// image upload
+  Future<void> uploadHostelImages() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(
+      source: ImageSource.gallery,
+    );
+    if (image == null) return;
+
+    final Uint8List imageData = File(image.path).readAsBytesSync();
+    setState(() {
+      pickedImages.add(imageData);
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -871,81 +917,113 @@ class _EditHostelsPageState extends State<EditHostelsPage> {
                     ),
                   ),
 
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                          child: Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.grey,
-                            ),
-                            child: const Center(
-                              child: Icon(
-                                Icons.add,
+                  SizedBox(
+                    height: 100,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: pickedImages.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index == pickedImages.length) {
+                          return GestureDetector(
+                            onTap: uploadHostelImages,
+                            child: Container(
+                              margin: const EdgeInsets.all(5),
+                              width: 100,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius: BorderRadius.circular(10),
                               ),
+                              child: const Icon(Icons.add),
                             ),
+                          );
+                        }
+                        return Container(
+                          margin: const EdgeInsets.all(5),
+                          width: 100,
+                          child: Image.memory(
+                            pickedImages[index],
+                            fit: BoxFit.cover,
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                          child: Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.grey,
-                            ),
-                            child: const Center(
-                              child: Icon(
-                                Icons.add,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                          child: Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.grey,
-                            ),
-                            child: const Center(
-                              child: Icon(
-                                Icons.add,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                          child: Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.grey,
-                            ),
-                            child: const Center(
-                              child: Icon(
-                                Icons.add,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                        );
+                      },
                     ),
                   ),
+
+                  // SingleChildScrollView(
+                  //   scrollDirection: Axis.horizontal,
+                  //   child: Row(
+                  //     children: [
+                  //       Padding(
+                  //         padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                  //         child: Container(
+                  //           width: 100,
+                  //           height: 100,
+                  //           decoration: BoxDecoration(
+                  //             shape: BoxShape.rectangle,
+                  //             borderRadius: BorderRadius.circular(10),
+                  //             color: Colors.grey,
+                  //           ),
+                  //           child: const Center(
+                  //             child: Icon(
+                  //               Icons.add,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       Padding(
+                  //         padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                  //         child: Container(
+                  //           width: 100,
+                  //           height: 100,
+                  //           decoration: BoxDecoration(
+                  //             shape: BoxShape.rectangle,
+                  //             borderRadius: BorderRadius.circular(10),
+                  //             color: Colors.grey,
+                  //           ),
+                  //           child: const Center(
+                  //             child: Icon(
+                  //               Icons.add,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       Padding(
+                  //         padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                  //         child: Container(
+                  //           width: 100,
+                  //           height: 100,
+                  //           decoration: BoxDecoration(
+                  //             shape: BoxShape.rectangle,
+                  //             borderRadius: BorderRadius.circular(10),
+                  //             color: Colors.grey,
+                  //           ),
+                  //           child: const Center(
+                  //             child: Icon(
+                  //               Icons.add,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       Padding(
+                  //         padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                  //         child: Container(
+                  //           width: 100,
+                  //           height: 100,
+                  //           decoration: BoxDecoration(
+                  //             shape: BoxShape.rectangle,
+                  //             borderRadius: BorderRadius.circular(10),
+                  //             color: Colors.grey,
+                  //           ),
+                  //           child: const Center(
+                  //             child: Icon(
+                  //               Icons.add,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
 
                   // save button
                   Padding(
