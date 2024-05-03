@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hostel_hive/pages/sign_in_page.dart';
 import 'package:hostel_hive/pages/user/edit_profile_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -58,9 +59,51 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  // call function
+  void _initiateCall(String phoneNumber) async {
+    final Uri url = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: SizedBox(
+        width: 130,
+        height: 40,
+        child: FloatingActionButton(
+          backgroundColor: Colors.green[400],
+          onPressed: () {
+            const phoneNumber = '0761516278';
+          _initiateCall(phoneNumber);
+          },
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.call,
+                size: 15,
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Text(
+                'Call for Admin',
+                style: TextStyle(
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
         backgroundColor: Colors.green[400],
