@@ -118,13 +118,13 @@ class _SignInPageState extends State<SignInPage> {
         return AlertDialog(
           title: Center(child: Text(title)),
         );
-       }, 
+      },
     );
-  }  
-  
+  }
+
   @override
   Widget build(BuildContext context) {
-      return Scaffold(
+    return Scaffold(
       backgroundColor: Colors.grey[50],
       body: Center(
         child: SingleChildScrollView(

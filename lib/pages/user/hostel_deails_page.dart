@@ -98,17 +98,19 @@ class _HostelDetailsPageState extends State<HostelDetailsPage> {
             final security = hostelData['security'];
             final food = hostelData['food'];
             final laundry = hostelData['laundry'];
+            final latitude = hostelData['latitude'];
+            final longitude = hostelData['longitude'];
 
             return ListView(
               children: [
                 // Map
-                const Padding(
+                Padding(
                   padding: EdgeInsets.only(top: 5.0),
                   //child: googleMap(),
                   child: SizedBox(
                     width: double.infinity,
                     height: 200,
-                    child: GoogleMapPage(),
+                    child: GoogleMapPage(latitude: latitude, longitude: longitude),
                   ),
                 ),
 

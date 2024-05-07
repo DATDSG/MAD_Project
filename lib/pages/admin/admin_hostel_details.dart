@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hostel_hive/pages/admin/edit_hostel.dart';
+import 'package:hostel_hive/pages/google_map.dart';
 
 class AdminHostelDetailsPage extends StatefulWidget {
   final DocumentSnapshot hostelData;
@@ -113,24 +114,19 @@ class _AdminHostelDetailsPageState extends State<AdminHostelDetailsPage> {
             final laundry = hostelData['laundry'];
             final accomendations = hostelData['accomendation'];
             final imageUrls = hostelData['hostelImageUrl'];
+            final latitude = hostelData['latitude'];
+            final longitude = hostelData['longitude'];
 
             return ListView(
               children: [
                 // Map
                 Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child: Container(
+                  padding: EdgeInsets.only(top: 5.0),
+                  //child: googleMap(),
+                  child: SizedBox(
                     width: double.infinity,
                     height: 200,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(
-                          'assets/images/map.png',
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                      color: Colors.white,
-                    ),
+                    child: GoogleMapPage(latitude: latitude,longitude: longitude),
                   ),
                 ),
 
