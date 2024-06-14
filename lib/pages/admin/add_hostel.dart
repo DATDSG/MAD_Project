@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:hostel_hive/pages/admin/get_google_map_location.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddHostelPage extends StatefulWidget {
@@ -32,6 +34,8 @@ class _AddHostelPageState extends State<AddHostelPage> {
   bool isSecurityChecked = false;
   bool isKitchenChecked = false;
   String? selectedItem = 'Boys';
+  double? latitude;
+  double? longitude;
 
   List<String> items = ['Boys', 'Girls'];
 
@@ -68,6 +72,8 @@ class _AddHostelPageState extends State<AddHostelPage> {
       'kitchen': isKitchenChecked,
       'accomendation': selectedItem,
       'hostelImageUrl': imageUrls,
+      'latitude': latitude,
+      'longitude': longitude,
     });
 
     // success message
@@ -713,6 +719,35 @@ class _AddHostelPageState extends State<AddHostelPage> {
                       fit: BoxFit.cover,
                     ),
                   );
+                },
+              ),
+            ),
+
+            const Padding(
+              padding: EdgeInsets.only(
+                left: 10.0,
+                top: 20,
+                bottom: 10,
+              ),
+              child: Text(
+                'Location',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+
+            Container(
+              width: double.infinity,
+              height: 200,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.green),
+              ),
+              child: GoogleMapPage(
+                location: (pos) {
+                  latitude = pos.latitude;
+                  longitude = pos.longitude;
                 },
               ),
             ),

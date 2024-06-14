@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hostel_hive/pages/sign_in_page.dart';
+import 'package:hostel_hive/pages/user/google_map_home_page.dart';
 import 'package:hostel_hive/pages/user/map_page.dart';
 import 'package:hostel_hive/pages/user/profile_page.dart';
 
@@ -197,7 +198,7 @@ class _HomePageState extends State<HomePage> {
             ),
 
             // About
-            ListTile(
+            /*ListTile(
               leading: const Icon(Icons.info),
               title: const Text(
                 'About',
@@ -206,7 +207,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               onTap: () {},
-            ),
+            ),*/
 
             const SizedBox(
               height: 10,
@@ -233,63 +234,68 @@ class _HomePageState extends State<HomePage> {
             // find place
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const MapPage(),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: 200,
-                  height: 150,
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 4,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.circular(15),
-                    image: const DecorationImage(
-                      image: AssetImage('assets/images/map.png'),
-                      fit: BoxFit.cover,
-                    ),
+              child: Stack(
+                children: [
+                  const SizedBox(
+                    width: double.infinity,
+                    height: 200,
+                    child:
+                        GoogleMapPage(),
                   ),
-                  child: Container(
-                    width: 200,
-                    height: 150,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.black.withOpacity(0.3),
-                          Colors.black.withOpacity(0.3),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const MapPage(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 1,
+                            blurRadius: 4,
+                            offset: const Offset(0, 3),
+                          ),
                         ],
+                        borderRadius: BorderRadius.circular(15),
                       ),
-                    ),
-                    child: const Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          'Find Place',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Color.fromARGB(255, 255, 255, 255),
-                            fontWeight: FontWeight.w400,
+                      child: Container(
+                        width: double.infinity,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.black.withOpacity(0.3),
+                              Colors.black.withOpacity(0.3),
+                            ],
+                          ),
+                        ),
+                        child: const Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              'Find Place',
+                              style: TextStyle(
+                                fontSize: 24,
+                                color: Color.fromARGB(255, 255, 255, 255),
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
           ],

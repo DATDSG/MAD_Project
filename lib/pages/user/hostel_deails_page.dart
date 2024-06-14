@@ -91,6 +91,7 @@ class _HostelDetailsPageState extends State<HostelDetailsPage> {
             final hostelData = snapshot.data!.data() as Map<String, dynamic>;
             final price = hostelData['price'];
             final description = hostelData['description'];
+            final address = hostelData['address'];
             final accomendations = hostelData['accomendation'];
             final imageUrls = hostelData['hostelImageUrl'];
             final wifi = hostelData['wifi'];
@@ -105,7 +106,7 @@ class _HostelDetailsPageState extends State<HostelDetailsPage> {
               children: [
                 // Map
                 Padding(
-                  padding: EdgeInsets.only(top: 5.0),
+                  padding: const EdgeInsets.only(top: 5.0),
                   //child: googleMap(),
                   child: SizedBox(
                     width: double.infinity,
@@ -211,15 +212,15 @@ class _HostelDetailsPageState extends State<HostelDetailsPage> {
                         ),
 
                         // location
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 5),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5),
                           child: Row(
                             children: [
-                              Icon(Icons.location_on_outlined),
+                              const Icon(Icons.location_on_outlined),
                               Flexible(
                                 child: Text(
-                                  'Location',
-                                  style: TextStyle(
+                                  address,
+                                  style: const TextStyle(
                                     fontSize: 17,
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,

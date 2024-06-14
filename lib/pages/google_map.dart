@@ -20,6 +20,8 @@ class GoogleMapPage extends StatefulWidget {
 class _GoogleMapPageState extends State<GoogleMapPage> {
   LatLng? _initialPosition;
   LatLng? _currentPosition;
+  bool _cameraTarget = false;
+  double _zoomLevel = 15;
 
   final Completer<GoogleMapController> _googleMapController =
       Completer<GoogleMapController>();
@@ -46,8 +48,11 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
         zoomControlsEnabled: false,
         initialCameraPosition: CameraPosition(
           target: _initialPosition!,
-          zoom: 15,
+          zoom: _zoomLevel,
         ),
+        onCameraMove: (CameraPosition cameraPosition) {
+          _zoomLevel = cameraPosition.zoom;
+        },
         onMapCreated: ((GoogleMapController controller) =>
             _googleMapController.complete(controller)),
         markers: {
@@ -65,14 +70,21 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
           ..add(Factory<PanGestureRecognizer>(() => PanGestureRecognizer()))
           ..add(Factory<ScaleGestureRecognizer>(() => ScaleGestureRecognizer()))
           ..add(Factory<TapGestureRecognizer>(() => TapGestureRecognizer()))
-          ..add(Factory<VerticalDragGestureRecognizer>(() => VerticalDragGestureRecognizer()))
-          ..add(Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer())),
+          ..add(Factory<VerticalDragGestureRecognizer>(
+              () => VerticalDragGestureRecognizer()))
+          ..add(Factory<OneSequenceGestureRecognizer>(
+              () => EagerGestureRecognizer())),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.small(
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        onPressed: () => _cameraToPosition(_initialPosition!),
-        child: const Icon(Icons.center_focus_strong),
+        foregroundColor: Colors.green[400],
+        shape:
+            const CircleBorder(side: BorderSide(width: 2, color: Colors.green)),
+        onPressed: () => {
+          _cameraTarget = !_cameraTarget,
+          _cameraToPosition(_initialPosition!),
+        },
+        child: const Icon(Icons.location_pin),
       ),
     );
   }
@@ -110,11 +122,13 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   }
 
   Future<void> _cameraToPosition(LatLng position) async {
-    final GoogleMapController controller = await _googleMapController.future;
-    CameraPosition _newCameraPosition =
-        CameraPosition(target: position, zoom: 15);
-    await controller
-        .animateCamera(CameraUpdate.newCameraPosition(_newCameraPosition));
+    if (_cameraTarget || position == _initialPosition!) {
+      final GoogleMapController controller = await _googleMapController.future;
+      CameraPosition _newCameraPosition =
+          CameraPosition(target: position, zoom: _zoomLevel);
+      await controller
+          .animateCamera(CameraUpdate.newCameraPosition(_newCameraPosition));
+    }
   }
 
   Future<List<LatLng>> getPolylinePoints() async {
@@ -123,7 +137,8 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
         "AIzaSyDfeF-zPKoh1Jiz4ErNct2-OAm7miPEXas",
         PointLatLng(_currentPosition!.latitude, _currentPosition!.longitude),
-        PointLatLng(_initialPosition!.latitude, _initialPosition!.longitude));
+        PointLatLng(_initialPosition!.latitude, _initialPosition!.longitude),
+        travelMode: TravelMode.driving);
     if (result.points.isNotEmpty) {
       result.points.forEach((PointLatLng point) {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));

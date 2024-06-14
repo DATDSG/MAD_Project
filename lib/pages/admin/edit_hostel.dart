@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:hostel_hive/pages/admin/edit_google_map_location.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditHostelsPage extends StatefulWidget {
@@ -34,6 +35,8 @@ class _EditHostelsPageState extends State<EditHostelsPage> {
   bool isSecurityChecked = false;
   bool isKitchenChecked = false;
   String? selectedItem = 'Boys';
+  double? latitude;
+  double? longitude;
 
   List<String> items = ['Boys', 'Girls'];
 
@@ -46,6 +49,8 @@ class _EditHostelsPageState extends State<EditHostelsPage> {
     isSecurityChecked = widget.hostelData['security'];
     isKitchenChecked = widget.hostelData['kitchen'];
     selectedItem = widget.hostelData['accomendation'];
+    latitude = widget.hostelData['latitude'];
+    longitude = widget.hostelData['longitude'];
   }
 
   // update hostel information
@@ -82,6 +87,8 @@ class _EditHostelsPageState extends State<EditHostelsPage> {
 
     // update accomodations
     accomodationUpdate();
+
+    uploadLocation();
 
     // success alert box
     showDialog(
@@ -196,7 +203,7 @@ class _EditHostelsPageState extends State<EditHostelsPage> {
           .collection('Hostels')
           .doc(widget.hostelData.id)
           .update({
-        'hostelLaundry': false,
+        'laundry': false,
       });
     }
   }
@@ -227,7 +234,7 @@ class _EditHostelsPageState extends State<EditHostelsPage> {
           .collection('Hostels')
           .doc(widget.hostelData.id)
           .update({
-        'hostelSecurity': isSecurityChecked,
+        'security': isSecurityChecked,
       });
     } else {
       await FirebaseFirestore.instance
@@ -314,7 +321,24 @@ class _EditHostelsPageState extends State<EditHostelsPage> {
       pickedImages.add(imageData);
     });
   }
-  
+
+  Future<void> uploadLocation() async {
+    if (latitude != null && longitude != null) {
+      await FirebaseFirestore.instance
+          .collection('Hostels')
+          .doc(widget.hostelData.id)
+          .update({
+        'latitude': latitude,
+      });
+      await FirebaseFirestore.instance
+          .collection('Hostels')
+          .doc(widget.hostelData.id)
+          .update({
+        'longitude': longitude,
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -970,6 +994,37 @@ class _EditHostelsPageState extends State<EditHostelsPage> {
                             fit: BoxFit.cover,
                           ),
                         );
+                      },
+                    ),
+                  ),
+
+                  const Padding(
+                    padding: EdgeInsets.only(
+                      left: 10.0,
+                      top: 20,
+                      bottom: 10,
+                    ),
+                    child: Text(
+                      'Location',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+
+                  Container(
+                    width: double.infinity,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.green),
+                    ),
+                    child: GoogleMapPage(
+                      latitude: latitude!,
+                      longitude: longitude!,
+                      location: (pos) {
+                        latitude = pos.latitude;
+                        longitude = pos.longitude;
                       },
                     ),
                   ),

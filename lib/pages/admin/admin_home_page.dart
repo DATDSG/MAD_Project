@@ -179,11 +179,11 @@ class _AdminHomePageState extends State<AdminHomePage> {
             ),
 
             // About
-            ListTile(
+            /*ListTile(
               leading: const Icon(Icons.info),
               title: const Text('About'),
               onTap: () {},
-            ),
+            ),*/
 
             // logout
             ListTile(

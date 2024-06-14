@@ -156,6 +156,7 @@ class _MapPageState extends State<MapPage> {
                         final hostelData =
                             hostels[index].data() as Map<String, dynamic>;
                         final hostelName = hostelData['hostelName'];
+                        final imageUrls = hostelData['hostelImageUrl'];
 
                         // hostel tile
                         return GestureDetector(
@@ -197,9 +198,8 @@ class _MapPageState extends State<MapPage> {
                                       decoration: BoxDecoration(
                                         color: Colors.grey,
                                         borderRadius: BorderRadius.circular(15),
-                                        image: const DecorationImage(
-                                          image: AssetImage(
-                                              'assets/images/img1.jpg'),
+                                        image: DecorationImage(
+                                          image: NetworkImage(imageUrls[0]),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -226,7 +226,7 @@ class _MapPageState extends State<MapPage> {
                                           ),
 
                                           // Rating bar
-                                          RatingBar.builder(
+                                          /*RatingBar.builder(
                                             initialRating: 3,
                                             minRating: 1,
                                             maxRating: 3,
@@ -244,7 +244,7 @@ class _MapPageState extends State<MapPage> {
                                             ),
                                             ignoreGestures: true,
                                             onRatingUpdate: (rating) {},
-                                          ),
+                                          ),*/
                                         ],
                                       ),
                                     ),
@@ -268,33 +268,3 @@ class _MapPageState extends State<MapPage> {
     );
   }
 }
-
-// Google Map
-//googleMap(),
-// Container(
-//   width: double.infinity,
-//   height: 180,
-//   decoration: BoxDecoration(
-//     image: const DecorationImage(
-//       image: AssetImage(
-//         'assets/images/map.png',
-//       ),
-//       fit: BoxFit.cover,
-//     ),
-//     color: Colors.white,
-//     boxShadow: [
-//       BoxShadow(
-//         color: Colors.black.withOpacity(0.1),
-//         spreadRadius: 2,
-//         blurRadius: 1,
-//         offset: const Offset(0, 1),
-//       ),
-//     ],
-//   ),
-//   child: const SizedBox(
-//     width: double.infinity,
-//     height: 180,
-//     child: googleMap(),
-//   ),
-// ),
-

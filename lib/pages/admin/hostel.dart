@@ -91,6 +91,7 @@ class _ManageHostelsPageState extends State<ManageHostelsPage> {
                   final hostelData =
                       hostels[index].data() as Map<String, dynamic>;
                   final hostelName = hostelData['hostelName'];
+                  final imageUrls = hostelData['hostelImageUrl'];
 
                   return GestureDetector(
                     onTap: () {
@@ -132,8 +133,8 @@ class _ManageHostelsPageState extends State<ManageHostelsPage> {
                                 decoration: BoxDecoration(
                                   color: Colors.grey,
                                   borderRadius: BorderRadius.circular(15),
-                                  image: const DecorationImage(
-                                    image: AssetImage('assets/images/img1.jpg'),
+                                  image: DecorationImage(
+                                    image: NetworkImage(imageUrls[0]),
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -158,7 +159,7 @@ class _ManageHostelsPageState extends State<ManageHostelsPage> {
                                     ),
 
                                     // Rating bar
-                                    RatingBar.builder(
+                                    /*RatingBar.builder(
                                       initialRating: 3,
                                       minRating: 1,
                                       maxRating: 3,
@@ -176,7 +177,7 @@ class _ManageHostelsPageState extends State<ManageHostelsPage> {
                                       ),
                                       ignoreGestures: true,
                                       onRatingUpdate: (rating) {},
-                                    ),
+                                    ),*/
                                   ],
                                 ),
                               ),
