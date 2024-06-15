@@ -52,6 +52,7 @@ dependencies:
   url_launcher: ^6.2.5
   google_nav_bar: ^5.0.6
   location: ^6.0.2
+  flutter_native_splash: ^2.4.0
     
 dev_dependencies:
   flutter_test:
@@ -109,3 +110,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+flutter_native_splash:
+  color: "42a5f5"
+  image: assets/images/splash.png
+  android: true
+  ios: true
