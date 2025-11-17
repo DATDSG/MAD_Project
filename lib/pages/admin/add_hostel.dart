@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hostel_hive/pages/admin/get_google_map_location.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -163,7 +162,7 @@ class _AddHostelPageState extends State<AddHostelPage> {
                   color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha: 0.1),
                       spreadRadius: 2,
                       blurRadius: 2,
                       offset: const Offset(5, 2),
@@ -231,7 +230,7 @@ class _AddHostelPageState extends State<AddHostelPage> {
                   color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha: 0.1),
                       spreadRadius: 1,
                       blurRadius: 2,
                       offset: const Offset(0, 2),
@@ -299,7 +298,7 @@ class _AddHostelPageState extends State<AddHostelPage> {
                   color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha: 0.1),
                       spreadRadius: 1,
                       blurRadius: 2,
                       offset: const Offset(0, 2),
@@ -367,7 +366,7 @@ class _AddHostelPageState extends State<AddHostelPage> {
                   color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha: 0.1),
                       spreadRadius: 1,
                       blurRadius: 2,
                       offset: const Offset(0, 2),
@@ -435,7 +434,7 @@ class _AddHostelPageState extends State<AddHostelPage> {
                   color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha: 0.1),
                       spreadRadius: 1,
                       blurRadius: 2,
                       offset: const Offset(0, 2),
@@ -517,8 +516,8 @@ class _AddHostelPageState extends State<AddHostelPage> {
                     // wifi
                     Checkbox(
                       value: isWifiChecked,
-                      fillColor: MaterialStateColor.resolveWith((states) {
-                        if (states.contains(MaterialState.selected)) {
+                      fillColor: WidgetStateColor.resolveWith((states) {
+                        if (states.contains(WidgetState.selected)) {
                           return Colors.green;
                         }
                         return Colors.white;
@@ -540,8 +539,8 @@ class _AddHostelPageState extends State<AddHostelPage> {
                     // Laundry
                     Checkbox(
                       value: isLaundryChecked,
-                      fillColor: MaterialStateColor.resolveWith((states) {
-                        if (states.contains(MaterialState.selected)) {
+                      fillColor: WidgetStateColor.resolveWith((states) {
+                        if (states.contains(WidgetState.selected)) {
                           return Colors.green;
                         }
                         return Colors.white;
@@ -563,8 +562,8 @@ class _AddHostelPageState extends State<AddHostelPage> {
                     // Foods
                     Checkbox(
                       value: isFoodChecked,
-                      fillColor: MaterialStateColor.resolveWith((states) {
-                        if (states.contains(MaterialState.selected)) {
+                      fillColor: WidgetStateColor.resolveWith((states) {
+                        if (states.contains(WidgetState.selected)) {
                           return Colors.green;
                         }
                         return Colors.white;
@@ -590,8 +589,8 @@ class _AddHostelPageState extends State<AddHostelPage> {
                     // Kitchen
                     Checkbox(
                       value: isKitchenChecked,
-                      fillColor: MaterialStateColor.resolveWith((states) {
-                        if (states.contains(MaterialState.selected)) {
+                      fillColor: WidgetStateColor.resolveWith((states) {
+                        if (states.contains(WidgetState.selected)) {
                           return Colors.green;
                         }
                         return Colors.white;
@@ -613,8 +612,8 @@ class _AddHostelPageState extends State<AddHostelPage> {
                     // Security
                     Checkbox(
                       value: isSecurityChecked,
-                      fillColor: MaterialStateColor.resolveWith((states) {
-                        if (states.contains(MaterialState.selected)) {
+                      fillColor: WidgetStateColor.resolveWith((states) {
+                        if (states.contains(WidgetState.selected)) {
                           return Colors.green;
                         }
                         return Colors.white;
@@ -761,11 +760,11 @@ class _AddHostelPageState extends State<AddHostelPage> {
                 child: ElevatedButton(
                   onPressed: addHostel,
                   style: ButtonStyle(
-                    shadowColor: MaterialStateProperty.all(Colors.grey),
-                    backgroundColor: MaterialStateProperty.all(
+                    shadowColor: WidgetStateProperty.all(Colors.grey),
+                    backgroundColor: WidgetStateProperty.all(
                       Colors.green[400],
                     ),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -794,11 +793,11 @@ class _AddHostelPageState extends State<AddHostelPage> {
                     Navigator.pop(context);
                   },
                   style: ButtonStyle(
-                    shadowColor: MaterialStateProperty.all(Colors.grey),
-                    backgroundColor: MaterialStateProperty.all(
+                    shadowColor: WidgetStateProperty.all(Colors.grey),
+                    backgroundColor: WidgetStateProperty.all(
                       Colors.white,
                     ),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                         side: const BorderSide(

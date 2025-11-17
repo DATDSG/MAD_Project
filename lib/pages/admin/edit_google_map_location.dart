@@ -42,7 +42,11 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _currentPosition == null
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            )
           : GoogleMap(
               myLocationButtonEnabled: false,
               zoomControlsEnabled: false,
@@ -67,19 +71,17 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
                       position: _placeLocation!)
               },
               onLongPress: _addMarker,
-              gestureRecognizers: Set()
-                ..add(
-                    Factory<PanGestureRecognizer>(() => PanGestureRecognizer()))
-                ..add(Factory<ScaleGestureRecognizer>(
-                    () => ScaleGestureRecognizer()))
-                ..add(
-                    Factory<TapGestureRecognizer>(() => TapGestureRecognizer()))
-                ..add(Factory<VerticalDragGestureRecognizer>(
-                    () => VerticalDragGestureRecognizer()))
-                ..add(Factory<OneSequenceGestureRecognizer>(
-                    () => EagerGestureRecognizer())),
+              gestureRecognizers: {
+                Factory<PanGestureRecognizer>(() => PanGestureRecognizer()),
+                Factory<ScaleGestureRecognizer>(() => ScaleGestureRecognizer()),
+                Factory<TapGestureRecognizer>(() => TapGestureRecognizer()),
+                Factory<VerticalDragGestureRecognizer>(
+                    () => VerticalDragGestureRecognizer()),
+                Factory<OneSequenceGestureRecognizer>(
+                    () => EagerGestureRecognizer()),
+              },
             ),
-            floatingActionButton: FloatingActionButton.small(
+      floatingActionButton: FloatingActionButton.small(
         backgroundColor: Colors.white,
         foregroundColor: Colors.green[400],
         shape:
@@ -94,21 +96,21 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   }
 
   Future<void> _getLocation() async {
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
 
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
         return;
       }
     }
 
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
         return;
       }
     }
@@ -128,10 +130,10 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   Future<void> _cameraToPosition(LatLng position) async {
     if (_cameraTarget || position == _placeLocation!) {
       final GoogleMapController controller = await _googleMapController.future;
-      CameraPosition _newCameraPosition =
+      CameraPosition newCameraPosition =
           CameraPosition(target: position, zoom: _zoomLevel);
       await controller
-          .animateCamera(CameraUpdate.newCameraPosition(_newCameraPosition));
+          .animateCamera(CameraUpdate.newCameraPosition(newCameraPosition));
     }
   }
 

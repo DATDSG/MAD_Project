@@ -66,18 +66,18 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
               position: _currentPosition!)
         },
         polylines: Set<Polyline>.of(polylines.values),
-        gestureRecognizers: Set()
-          ..add(Factory<PanGestureRecognizer>(() => PanGestureRecognizer()))
-          ..add(Factory<ScaleGestureRecognizer>(() => ScaleGestureRecognizer()))
-          ..add(Factory<TapGestureRecognizer>(() => TapGestureRecognizer()))
-          ..add(Factory<VerticalDragGestureRecognizer>(
-              () => VerticalDragGestureRecognizer()))
-          ..add(Factory<OneSequenceGestureRecognizer>(
-              () => EagerGestureRecognizer())),
+        gestureRecognizers: {
+          Factory<PanGestureRecognizer>(() => PanGestureRecognizer()),
+          Factory<ScaleGestureRecognizer>(() => ScaleGestureRecognizer()),
+          Factory<TapGestureRecognizer>(() => TapGestureRecognizer()),
+          Factory<VerticalDragGestureRecognizer>(
+              () => VerticalDragGestureRecognizer()),
+          Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
+        },
       ),
       floatingActionButton: FloatingActionButton.small(
         backgroundColor: Colors.white,
-        foregroundColor: Colors.green[400],
+        foregroundColor: Theme.of(context).colorScheme.primary,
         shape:
             const CircleBorder(side: BorderSide(width: 2, color: Colors.green)),
         onPressed: () => {
@@ -90,21 +90,21 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   }
 
   Future<void> _getLocation() async {
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
 
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
         return;
       }
     }
 
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
         return;
       }
     }
@@ -122,13 +122,11 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   }
 
   Future<void> _cameraToPosition(LatLng position) async {
-    if (_cameraTarget || position == _initialPosition!) {
-      final GoogleMapController controller = await _googleMapController.future;
-      CameraPosition _newCameraPosition =
-          CameraPosition(target: position, zoom: _zoomLevel);
-      await controller
-          .animateCamera(CameraUpdate.newCameraPosition(_newCameraPosition));
-    }
+    final GoogleMapController controller = await _googleMapController.future;
+    CameraPosition newCameraPosition =
+        CameraPosition(target: position, zoom: _zoomLevel);
+    await controller
+        .animateCamera(CameraUpdate.newCameraPosition(newCameraPosition));
   }
 
   Future<List<LatLng>> getPolylinePoints() async {
@@ -140,9 +138,9 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
         PointLatLng(_initialPosition!.latitude, _initialPosition!.longitude),
         travelMode: TravelMode.driving);
     if (result.points.isNotEmpty) {
-      result.points.forEach((PointLatLng point) {
+      for (var point in result.points) {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      });
+      }
     } else {
       debugPrint(result.errorMessage);
     }

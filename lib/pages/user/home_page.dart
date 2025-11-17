@@ -18,13 +18,14 @@ class _HomePageState extends State<HomePage> {
   final user = FirebaseAuth.instance.currentUser!;
 
   Future signOut() async {
-    await FirebaseAuth.instance.signOut().then(
-          (value) => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const SignInPage(),
-            ),
-          ),
-        );
+    await FirebaseAuth.instance.signOut();
+    if (mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const SignInPage(),
+        ),
+      );
+    }
   }
 
   void alertDialog() {
@@ -58,177 +59,121 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        backgroundColor: Colors.green[400],
-        // Logo
-        title: Center(
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 20),
-            child: Image.asset(
-              'assets/images/logo.png',
-              width: 100,
-              height: 100,
-            ),
-          ),
+        title: Text(
+          'Find Your Hostel',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
         ),
-
-        // Profile picture
+        elevation: 0,
         actions: [
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ProfilePage()),
-              );
-            },
-            child: StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('Users')
-                  .doc(user.email)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  // get user data
-                  final userData =
-                      snapshot.data!.data() as Map<String, dynamic>;
+          StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('Users')
+                .doc(user.email)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final userData = snapshot.data!.data() as Map<String, dynamic>;
+                final profilePictureUrl = userData['profilePictureUrl'];
 
-                  // get profile picture url
-                  final profilePictureUrl = userData['profilePictureUrl'];
-
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: CircleAvatar(
-                      radius: 22,
-                      backgroundColor: Colors.green[700],
-                      child: Container(
-                        height: 35,
-                        width: 35,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: profilePictureUrl != null
-                              ? DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: NetworkImage(profilePictureUrl),
-                                )
-                              : const DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image:
-                                      AssetImage('assets/images/profile.jpg'),
-                                ),
+                return Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ProfilePage(),
                         ),
-                      ),
+                      );
+                    },
+                    child: CircleAvatar(
+                      radius: 20,
+                      backgroundImage: profilePictureUrl != null
+                          ? NetworkImage(profilePictureUrl)
+                          : const AssetImage('assets/images/profile.jpg')
+                              as ImageProvider,
                     ),
-                  );
-                } else {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.green[400],
-                    ),
-                  );
-                }
-              },
-            ),
+                  ),
+                );
+              } else {
+                return const Padding(
+                  padding: EdgeInsets.only(right: 16),
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    strokeWidth: 2,
+                  ),
+                );
+              }
+            },
           ),
         ],
       ),
-
-      // Navigation
       drawer: Drawer(
-        backgroundColor: Colors.grey[100],
         child: ListView(
           children: [
-            // Logo
             DrawerHeader(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+              ),
               child: Center(
                 child: Image.asset(
                   'assets/images/logo.png',
-                  width: 150,
-                  height: 150,
+                  width: 120,
+                  height: 120,
                 ),
               ),
             ),
-
-            const SizedBox(
-              height: 10,
-            ),
-
-            // Home
             ListTile(
               leading: const Icon(Icons.home),
-              title: const Text(
-                'Home',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+              title: const Text('Home'),
               onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const HomePage(),
-                  ),
-                );
+                Navigator.of(context).pop();
               },
             ),
-
-            const SizedBox(
-              height: 10,
-            ),
-
-            // Profile
             ListTile(
               leading: const Icon(Icons.person),
-              title: const Text(
-                'Profile',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+              title: const Text('Profile'),
               onTap: () {
-                Navigator.of(context).push(
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
                   MaterialPageRoute(
                     builder: (context) => const ProfilePage(),
                   ),
                 );
               },
             ),
-
-            const SizedBox(
-              height: 10,
+            ListTile(
+              leading: const Icon(Icons.map),
+              title: const Text('Map View'),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MapPage(),
+                  ),
+                );
+              },
             ),
-
-            // About
-            /*ListTile(
-              leading: const Icon(Icons.info),
-              title: const Text(
-                'About',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              onTap: () {},
-            ),*/
-
-            const SizedBox(
-              height: 10,
-            ),
-
-            // log out
+            const Divider(),
             ListTile(
               leading: const Icon(Icons.logout),
-              title: const Text(
-                'Log Out',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              onTap: alertDialog,
+              title: const Text('Sign Out'),
+              onTap: () {
+                Navigator.of(context).pop();
+                alertDialog();
+              },
             ),
           ],
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: ListView(
           children: [
             // find place
@@ -239,8 +184,7 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(
                     width: double.infinity,
                     height: 200,
-                    child:
-                        GoogleMapPage(),
+                    child: GoogleMapPage(),
                   ),
                   GestureDetector(
                     onTap: () {
@@ -256,7 +200,7 @@ class _HomePageState extends State<HomePage> {
                       decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
+                            color: Colors.grey.withValues(alpha: 0.5),
                             spreadRadius: 1,
                             blurRadius: 4,
                             offset: const Offset(0, 3),
@@ -273,8 +217,8 @@ class _HomePageState extends State<HomePage> {
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              Colors.black.withOpacity(0.3),
-                              Colors.black.withOpacity(0.3),
+                              Colors.black.withValues(alpha: 0.3),
+                              Colors.black.withValues(alpha: 0.3),
                             ],
                           ),
                         ),

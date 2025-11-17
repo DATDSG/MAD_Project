@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -342,25 +344,24 @@ class _EditHostelsPageState extends State<EditHostelsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.green[400],
-        elevation: 2,
-        shadowColor: Colors.black,
-        title: const Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(
-              'Edit Hostel',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        elevation: 0,
+        title: Text(
+          'Edit Hostel',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ) ??
+              const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
-            ),
-          ],
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection('Hostels')
@@ -1106,74 +1107,73 @@ class _EditHostelsPageState extends State<EditHostelsPage> {
                   // ),
 
                   // save button
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
+                  FilledButton(
+                    onPressed: updateHostelDetails,
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                     child: SizedBox(
                       height: 45,
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: updateHostelDetails,
-                        style: ButtonStyle(
-                          shadowColor: MaterialStateProperty.all(Colors.grey),
-                          backgroundColor: MaterialStateProperty.all(
-                            Colors.green[400],
-                          ),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        ),
-                        child: const Text(
-                          'Save',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          ),
+                      child: Center(
+                        child: Text(
+                          'Save Changes',
+                          style:
+                              Theme.of(context).textTheme.labelLarge?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ) ??
+                                  const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                         ),
                       ),
                     ),
                   ),
 
+                  const SizedBox(height: 12),
+
                   // cancel button
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
+                  OutlinedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
+                      side: BorderSide(
+                        color: Theme.of(context).colorScheme.primary,
+                        width: 2,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                     child: SizedBox(
                       height: 45,
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        style: ButtonStyle(
-                          shadowColor: MaterialStateProperty.all(Colors.grey),
-                          backgroundColor: MaterialStateProperty.all(
-                            Colors.white,
-                          ),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              side: const BorderSide(
-                                color: Color.fromARGB(255, 102, 187, 106),
-                                width: 2,
-                              ),
-                            ),
-                          ),
-                        ),
-                        child: const Text(
+                      child: Center(
+                        child: Text(
                           'Cancel',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.labelLarge?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ) ??
+                                  const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                         ),
                       ),
                     ),
                   ),
+
+                  const SizedBox(height: 20),
                 ],
               );
             } else {

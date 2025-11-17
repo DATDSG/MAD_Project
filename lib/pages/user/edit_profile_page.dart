@@ -270,22 +270,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        backgroundColor: Colors.green[400],
-        elevation: 2,
-        shadowColor: Colors.black,
-        title: const Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(
-              'Edit Profile',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
+        title: Text(
+          'Edit Profile',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
-            ),
-          ],
         ),
+        elevation: 0,
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
@@ -298,313 +291,174 @@ class _EditProfilePageState extends State<EditProfilePage> {
             final userData = snapshot.data!.data() as Map<String, dynamic>;
 
             return ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 20,
-                  ),
-                  child: Column(
-                    children: [
-                      // profile picture
-                      Center(
-                        child: GestureDetector(
-                          onTap: changeProfilePicture,
-                          child: CircleAvatar(
-                            radius: 59,
-                            backgroundColor: Colors.green[400],
-                            child: Container(
-                              height: 100,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                shape: BoxShape.circle,
-                                image: pickedImage != null
-                                    ? DecorationImage(
+                // Profile Picture
+                Center(
+                  child: GestureDetector(
+                    onTap: changeProfilePicture,
+                    child: Stack(
+                      children: [
+                        CircleAvatar(
+                          radius: 60,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          child: ClipOval(
+                            child: pickedImage != null
+                                ? Image.memory(
+                                    pickedImage!,
+                                    fit: BoxFit.cover,
+                                    width: 120,
+                                    height: 120,
+                                  )
+                                : profilePictureUrl != null
+                                    ? Image.network(
+                                        userData['profilePictureUrl'],
                                         fit: BoxFit.cover,
-                                        image: MemoryImage(
-                                          pickedImage!,
+                                        width: 120,
+                                        height: 120,
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                Image.asset(
+                                          'assets/images/profile.jpg',
+                                          fit: BoxFit.cover,
+                                          width: 120,
+                                          height: 120,
                                         ),
                                       )
-                                    : profilePictureUrl != null
-                                        ? DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image: NetworkImage(
-                                                userData['profilePictureUrl']),
-                                          )
-                                        : const DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image: AssetImage(
-                                                'assets/images/profile.jpg'),
-                                          ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      // Name
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5),
-                        child: Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                spreadRadius: 1,
-                                blurRadius: 2,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.only(top: 10, left: 20),
-                                child: Text(
-                                  "Name",
-                                  style: TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 20, bottom: 10),
-                                child: SizedBox(
-                                  height: 25,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: TextField(
-                                      controller: nameController,
-                                      decoration: InputDecoration(
-                                        hintText: userData['name'],
-                                        hintStyle: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.grey[700],
-                                        ),
-                                        focusedBorder: const UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: Colors.green,
-                                          ),
-                                        ),
-                                        border: const UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: Colors.grey,
-                                            width: 2,
-                                          ),
-                                        ),
-                                        contentPadding:
-                                            const EdgeInsets.only(bottom: 10),
+                                    : Image.asset(
+                                        'assets/images/profile.jpg',
+                                        fit: BoxFit.cover,
+                                        width: 120,
+                                        height: 120,
                                       ),
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.grey[700],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
                           ),
                         ),
-                      ),
-
-                      // Contact Number
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5),
-                        child: Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                spreadRadius: 1,
-                                blurRadius: 2,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.only(top: 10, left: 20),
-                                child: Text(
-                                  "Contact Number",
-                                  style: TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 20, bottom: 10),
-                                child: SizedBox(
-                                  height: 25,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: TextField(
-                                      controller: contactNumberController,
-                                      decoration: InputDecoration(
-                                        hintText: userData['contactNumber'],
-                                        hintStyle: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.grey[700],
-                                        ),
-                                        focusedBorder: const UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: Colors.green,
-                                          ),
-                                        ),
-                                        border: const UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: Colors.grey,
-                                            width: 2,
-                                          ),
-                                        ),
-                                        contentPadding:
-                                            const EdgeInsets.only(bottom: 10),
-                                      ),
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.grey[700],
-                                      ),
-                                      keyboardType: TextInputType.number,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      // Save button
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: SizedBox(
-                          height: 45,
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: updateUserDetails,
-                            style: ButtonStyle(
-                              shadowColor:
-                                  MaterialStateProperty.all(Colors.grey),
-                              backgroundColor: MaterialStateProperty.all(
-                                Colors.green[400],
-                              ),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                            child: const Text(
-                              'Save',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                              ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            child: const Icon(
+                              Icons.camera_alt,
+                              color: Colors.white,
+                              size: 18,
                             ),
                           ),
                         ),
-                      ),
-
-                      // delete profile button
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5),
-                        child: SizedBox(
-                          height: 45,
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: alertDialog,
-                            style: ButtonStyle(
-                              shadowColor:
-                                  MaterialStateProperty.all(Colors.grey),
-                              backgroundColor: MaterialStateProperty.all(
-                                Colors.red[400],
-                              ),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                            child: const Text(
-                              'Delete account',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      // Change Password
-                      const Padding(
-                        padding: EdgeInsets.only(top: 20, bottom: 10),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Change Password',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      // password change button
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: SizedBox(
-                          height: 45,
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: passwordChangeAlertDialog,
-                            style: ButtonStyle(
-                              shadowColor:
-                                  MaterialStateProperty.all(Colors.grey),
-                              backgroundColor: MaterialStateProperty.all(
-                                Colors.green[400],
-                              ),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                            child: const Text(
-                              'Change Password',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
+                ),
+                const SizedBox(height: 32),
+
+                // Name Field
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Name',
+                          style:
+                              Theme.of(context).textTheme.labelMedium?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextField(
+                          controller: nameController,
+                          decoration: InputDecoration(
+                            hintText: userData['name'],
+                            isDense: true,
+                            contentPadding:
+                                const EdgeInsets.symmetric(vertical: 8),
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                // Contact Number Field
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Contact Number',
+                          style:
+                              Theme.of(context).textTheme.labelMedium?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextField(
+                          controller: contactNumberController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            hintText: userData['contactNumber'],
+                            isDense: true,
+                            contentPadding:
+                                const EdgeInsets.symmetric(vertical: 8),
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Save Button
+                FilledButton(
+                  onPressed: updateUserDetails,
+                  child: const Text('Save Changes'),
+                ),
+                const SizedBox(height: 12),
+
+                // Change Password Section
+                Text(
+                  'Security',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                const SizedBox(height: 12),
+
+                // Change Password Button
+                FilledButton(
+                  onPressed: passwordChangeAlertDialog,
+                  child: const Text('Change Password'),
+                ),
+                const SizedBox(height: 24),
+
+                // Delete Account Button
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.red,
+                  ),
+                  onPressed: alertDialog,
+                  child: const Text('Delete Account'),
                 ),
               ],
             );

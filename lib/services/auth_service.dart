@@ -3,34 +3,75 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class AuthService {
-  // google sign in
-  Future<UserCredential> signInWithGoogle() async {
-  // Trigger the authentication flow
-  final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FacebookAuth _facebookAuth = FacebookAuth.instance;
 
-  // Obtain the auth details from the request
-  final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+  /// Sign in with Google
+  Future<UserCredential?> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
-  // Create a new credential
-  final credential = GoogleAuthProvider.credential(
-    accessToken: googleAuth?.accessToken,
-    idToken: googleAuth?.idToken,
-  );
+      if (googleUser == null) {
+        return null;
+      }
 
-  // Once signed in, return the UserCredential
-  return await FirebaseAuth.instance.signInWithCredential(credential);
-}
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
-  // facebook sign in
-  Future<UserCredential> signInWithFacebook() async {
-    // Trigger the sign-in flow
-    final LoginResult loginResult = await FacebookAuth.instance.login();
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
 
-    // Create a credential from the access token
-    final OAuthCredential facebookAuthCredential =
-        FacebookAuthProvider.credential(loginResult.accessToken!.token);
+      return await _firebaseAuth.signInWithCredential(credential);
+    } on FirebaseAuthException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
 
-    // Once signed in, return the UserCredential
-    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+  /// Sign in with Facebook
+  Future<UserCredential?> signInWithFacebook() async {
+    try {
+      final LoginResult result = await _facebookAuth.login();
+
+      if (result.status == LoginStatus.success) {
+        final AccessToken accessToken = result.accessToken!;
+
+        final OAuthCredential credential =
+            FacebookAuthProvider.credential(accessToken.token);
+
+        return await _firebaseAuth.signInWithCredential(credential);
+      } else {
+        return null;
+      }
+    } on FirebaseAuthException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// Sign out from all providers
+  Future<void> signOut() async {
+    try {
+      await _firebaseAuth.signOut();
+      await _googleSignIn.signOut();
+      await _facebookAuth.logOut();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// Get current user
+  User? getCurrentUser() {
+    return _firebaseAuth.currentUser;
+  }
+
+  /// Check if user is logged in
+  bool isLoggedIn() {
+    return _firebaseAuth.currentUser != null;
   }
 }

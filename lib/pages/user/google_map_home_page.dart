@@ -27,41 +27,53 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _currentPosition == null ? const Center(child: CircularProgressIndicator()) : GoogleMap(
-        myLocationButtonEnabled: false,
-        zoomControlsEnabled: false,
-        initialCameraPosition: CameraPosition(
-          target: _currentPosition!,
-          zoom: 13,
+      appBar: AppBar(
+        title: Text(
+          'Map View',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
         ),
-        onMapCreated: ((GoogleMapController controller) =>
-            _googleMapController.complete(controller)),
-        markers: {
-          Marker(
-              markerId: const MarkerId("currentLocation"),
-              icon: BitmapDescriptor.defaultMarker,
-              position: _currentPosition!)
-        },
+        elevation: 0,
       ),
+      body: _currentPosition == null
+          ? const Center(child: CircularProgressIndicator())
+          : GoogleMap(
+              myLocationButtonEnabled: false,
+              zoomControlsEnabled: false,
+              initialCameraPosition: CameraPosition(
+                target: _currentPosition!,
+                zoom: 13,
+              ),
+              onMapCreated: ((GoogleMapController controller) =>
+                  _googleMapController.complete(controller)),
+              markers: {
+                Marker(
+                    markerId: const MarkerId("currentLocation"),
+                    icon: BitmapDescriptor.defaultMarker,
+                    position: _currentPosition!)
+              },
+            ),
     );
   }
 
   Future<void> _getLocation() async {
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
 
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
         return;
       }
     }
 
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
         return;
       }
     }
@@ -80,9 +92,9 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
 
   Future<void> _cameraToPosition(LatLng position) async {
     final GoogleMapController controller = await _googleMapController.future;
-    CameraPosition _newCameraPosition =
+    CameraPosition newCameraPosition =
         CameraPosition(target: position, zoom: 13);
     await controller
-        .animateCamera(CameraUpdate.newCameraPosition(_newCameraPosition));
+        .animateCamera(CameraUpdate.newCameraPosition(newCameraPosition));
   }
 }

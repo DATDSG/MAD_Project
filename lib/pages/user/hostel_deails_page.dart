@@ -36,24 +36,15 @@ class _HostelDetailsPageState extends State<HostelDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
-      // Call Button
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // Retrieve the phone number from Firestore and initiate a phone call
           final phoneNumber = widget.hostelData['contactNumber'];
           _initiateCall(phoneNumber);
         },
-        backgroundColor: Colors.green[400],
-        child: const Icon(
-          Icons.phone,
-          color: Colors.black,
-        ),
+        label: const Text('Call Hostel'),
+        icon: const Icon(Icons.phone),
       ),
       appBar: AppBar(
-        backgroundColor: Colors.green[400],
-        elevation: 2,
-        shadowColor: Colors.black,
         title: StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection('Hostels')
@@ -62,23 +53,18 @@ class _HostelDetailsPageState extends State<HostelDetailsPage> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final data = snapshot.data!.data() as Map<String, dynamic>;
-
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    data['hostelName'],
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
+              return Text(
+                data['hostelName'],
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
-                  ),
-                ],
               );
-            } else {
-              return const Text('');
             }
+            return const Text('Loading...');
           },
         ),
+        elevation: 0,
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
@@ -87,7 +73,6 @@ class _HostelDetailsPageState extends State<HostelDetailsPage> {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            // get hostel data
             final hostelData = snapshot.data!.data() as Map<String, dynamic>;
             final price = hostelData['price'];
             final description = hostelData['description'];
@@ -105,52 +90,45 @@ class _HostelDetailsPageState extends State<HostelDetailsPage> {
             return ListView(
               children: [
                 // Map
-                Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  //child: googleMap(),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 200,
-                    child: GoogleMapPage(latitude: latitude, longitude: longitude),
-                  ),
+                SizedBox(
+                  width: double.infinity,
+                  height: 220,
+                  child:
+                      GoogleMapPage(latitude: latitude, longitude: longitude),
                 ),
 
-                // Hostel Images
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                const SizedBox(height: 16),
+
+                // Hostel Images Carousel
+                SizedBox(
+                  height: 200,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Row(
                       children: List.generate(
                         imageUrls.length,
                         (index) => Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5, vertical: 10),
-                          child: Container(
-                            width: 250,
-                            height: 160,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  spreadRadius: 1,
-                                  blurRadius: 2,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                              color: Colors.white,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(5),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: NetworkImage(imageUrls[index]),
+                          padding: const EdgeInsets.only(right: 12),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              width: 250,
+                              height: 180,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.15),
+                                    spreadRadius: 1,
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
                                   ),
-                                ),
+                                ],
+                              ),
+                              child: Image.network(
+                                imageUrls[index],
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),
@@ -160,213 +138,242 @@ class _HostelDetailsPageState extends State<HostelDetailsPage> {
                   ),
                 ),
 
-                // Hostel Details
+                const SizedBox(height: 24),
+
+                // Main Info Card
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Container(
-                    padding: const EdgeInsets.only(
-                      left: 20,
-                      right: 10,
-                      top: 10,
-                      bottom: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          spreadRadius: 1,
-                          blurRadius: 2,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // price & accomendations
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // accomenation for
-                            Text(
-                              accomendations,
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.green,
-                              ),
-                            ),
-
-                            // price
-                            Text(
-                              '$price/Month',
-                              style: const TextStyle(
-                                fontSize: 22,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w900,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        // location
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5),
-                          child: Row(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Price and Type
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Icon(Icons.location_on_outlined),
-                              Flexible(
-                                child: Text(
-                                  address,
-                                  style: const TextStyle(
-                                    fontSize: 17,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    accomendations,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                        ),
                                   ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Type of Accommodation',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                          color: Colors.grey[600],
+                                        ),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    'Rs. $price',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                        ),
+                                  ),
+                                  Text(
+                                    'per month',
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+
+                          const Divider(height: 24),
+
+                          // Address
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.location_on,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Address',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      address,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
-                        ),
 
-                        // hostel description
-                        const Text(
-                          'Description',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
+                          const SizedBox(height: 16),
+
+                          // Description
+                          Text(
+                            'About',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
-                        ),
-
-                        Text(
-                          description,
-                          style: const TextStyle(
-                              fontSize: 15, color: Colors.black),
-                        ),
-
-                        const Padding(
-                          padding: EdgeInsets.only(top: 5),
-                          child: Text(
-                            'Facilities',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          const SizedBox(height: 8),
+                          Text(
+                            description,
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
-                        ),
-
-                        // facilitis
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (wifi)
-                                  const Padding(
-                                    padding: EdgeInsets.only(top: 5),
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.wifi),
-                                        SizedBox(width: 5),
-                                        Text(
-                                          'Wifi',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                if (kitchen)
-                                  const Padding(
-                                    padding: EdgeInsets.only(top: 5),
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.kitchen),
-                                        SizedBox(width: 5),
-                                        Text(
-                                          'Kitchen',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                if (security)
-                                  const Padding(
-                                    padding: EdgeInsets.only(top: 5),
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.security),
-                                        SizedBox(width: 5),
-                                        Text(
-                                          'Security',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                if (food)
-                                  const Padding(
-                                    padding: EdgeInsets.only(top: 5),
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.fastfood),
-                                        SizedBox(width: 5),
-                                        Text(
-                                          'Food',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                if (laundry)
-                                  const Padding(
-                                    padding: EdgeInsets.only(top: 5),
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.local_laundry_service),
-                                        SizedBox(width: 5),
-                                        Text(
-                                          'Laundry',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
+
+                const SizedBox(height: 20),
+
+                // Facilities
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Facilities',
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                      ),
+                      const SizedBox(height: 12),
+                      GridView.count(
+                        crossAxisCount: 2,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        mainAxisSpacing: 12,
+                        crossAxisSpacing: 12,
+                        childAspectRatio: 1.5,
+                        children: [
+                          _buildFacilityTile(
+                            context,
+                            'WiFi',
+                            Icons.wifi,
+                            wifi,
+                          ),
+                          _buildFacilityTile(
+                            context,
+                            'Kitchen',
+                            Icons.kitchen,
+                            kitchen,
+                          ),
+                          _buildFacilityTile(
+                            context,
+                            'Security',
+                            Icons.security,
+                            security,
+                          ),
+                          _buildFacilityTile(
+                            context,
+                            'Food',
+                            Icons.restaurant,
+                            food,
+                          ),
+                          _buildFacilityTile(
+                            context,
+                            'Laundry',
+                            Icons.local_laundry_service,
+                            laundry,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 32),
               ],
             );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
           }
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
         },
+      ),
+    );
+  }
+
+  Widget _buildFacilityTile(
+    BuildContext context,
+    String name,
+    IconData icon,
+    bool available,
+  ) {
+    return Card(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            size: 32,
+            color: available
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.surfaceContainerHighest,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            name,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  fontWeight: FontWeight.w500,
+                ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            available ? 'Available' : 'Not Available',
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: available
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+          ),
+        ],
       ),
     );
   }

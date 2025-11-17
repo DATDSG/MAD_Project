@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:hostel_hive/pages/admin/add_hostel.dart';
 import 'package:hostel_hive/pages/admin/admin_hostel_details.dart';
 
@@ -15,22 +14,10 @@ class ManageHostelsPage extends StatefulWidget {
 class _ManageHostelsPageState extends State<ManageHostelsPage> {
   final user = FirebaseAuth.instance.currentUser!;
 
-  Widget _buildNoHostelsWidget() {
-    return const Center(
-      child: Text(
-        'Add New Hostels',
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
-      // add hostel button
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.green[400],
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
             context,
@@ -39,163 +26,154 @@ class _ManageHostelsPageState extends State<ManageHostelsPage> {
             ),
           );
         },
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
+        label: const Text('Add Hostel'),
       ),
       appBar: AppBar(
-        backgroundColor: Colors.green[400],
-        elevation: 2,
-        shadowColor: Colors.black,
-        title: const Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(right: 20),
-              child: Text(
-                'Manage Hostels',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black,
-                  fontSize: 22,
-                ),
+        title: Text(
+          'Manage Hostels',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
-            ),
-          ],
         ),
+        elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection('Hostels')
-              .where('userId', isEqualTo: user.uid)
-              .snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('Hostels')
+            .where('userId', isEqualTo: user.uid)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return _buildNoHostelsWidget();
-            }
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(
+              child: Text(
+                'Add New Hostels',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            );
+          }
 
-            if (snapshot.hasData) {
-              // get the all hostels from database an add hostels to the list
-              final List<DocumentSnapshot> hostels = snapshot.data!.docs;
+          if (snapshot.hasData) {
+            final List<DocumentSnapshot> hostels = snapshot.data!.docs;
 
-              return ListView.builder(
-                itemCount: hostels.length,
-                itemBuilder: (context, index) {
-                  // get hostel name
-                  final hostelData =
-                      hostels[index].data() as Map<String, dynamic>;
-                  final hostelName = hostelData['hostelName'];
-                  final imageUrls = hostelData['hostelImageUrl'];
+            return ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              itemCount: hostels.length,
+              itemBuilder: (context, index) {
+                final hostelData =
+                    hostels[index].data() as Map<String, dynamic>;
+                final hostelName = hostelData['hostelName'];
+                final imageUrls = hostelData['hostelImageUrl'];
 
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => AdminHostelDetailsPage(
-                            hostelData: hostels[index],
-                          ),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
-                      child: Container(
-                        width: double.infinity,
-                        height: 140,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              spreadRadius: 2,
-                              blurRadius: 1,
-                              offset: const Offset(0, 1),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            // Image
-                            Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Container(
-                                width: 130,
-                                height: 150,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey,
-                                  borderRadius: BorderRadius.circular(15),
-                                  image: DecorationImage(
-                                    image: NetworkImage(imageUrls[0]),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            // Hostel name and Rating
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Hostel Name
-                                    Text(
-                                      hostelName ?? '',
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-
-                                    // Rating bar
-                                    /*RatingBar.builder(
-                                      initialRating: 3,
-                                      minRating: 1,
-                                      maxRating: 3,
-                                      direction: Axis.horizontal,
-                                      itemCount: 5,
-                                      itemPadding:
-                                          const EdgeInsets.only(left: 0.1),
-                                      itemBuilder: (context, _) =>
-                                          Transform.scale(
-                                        scale: 0.8,
-                                        child: const Icon(
-                                          Icons.star,
-                                          color: Colors.amber,
-                                        ),
-                                      ),
-                                      ignoreGestures: true,
-                                      onRatingUpdate: (rating) {},
-                                    ),*/
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => AdminHostelDetailsPage(
+                          hostelData: hostels[index],
                         ),
                       ),
+                    );
+                  },
+                  child: Card(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                  );
-                },
-              );
-            } else {
-              return const Center(
-                child: Text('Add new Hostel'),
-              );
-            }
-          },
-        ),
+                    child: Row(
+                      children: [
+                        // Image
+                        ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(12),
+                            bottomLeft: Radius.circular(12),
+                          ),
+                          child: Image.network(
+                            imageUrls[0],
+                            width: 130,
+                            height: 140,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Container(
+                              width: 130,
+                              height: 140,
+                              color:
+                                  Theme.of(context).colorScheme.outlineVariant,
+                              child: const Icon(Icons.image),
+                            ),
+                          ),
+                        ),
+
+                        // Hostel Info
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  hostelName ?? 'Unknown',
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.business,
+                                      size: 16,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      'Tap to manage',
+                                      style:
+                                          Theme.of(context).textTheme.bodySmall,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        // Arrow
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: Icon(
+                            Icons.arrow_forward_ios,
+                            size: 18,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          } else {
+            return Center(
+              child: Text(
+                'Add new Hostel',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            );
+          }
+        },
       ),
     );
   }

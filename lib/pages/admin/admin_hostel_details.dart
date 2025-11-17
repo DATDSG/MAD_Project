@@ -17,7 +17,7 @@ class AdminHostelDetailsPage extends StatefulWidget {
 
 class _AdminHostelDetailsPageState extends State<AdminHostelDetailsPage> {
   // alert dialog
-  void alertDialog(){
+  void alertDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -79,22 +79,15 @@ class _AdminHostelDetailsPageState extends State<AdminHostelDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        backgroundColor: Colors.green[400],
-        elevation: 2,
-        shadowColor: Colors.black,
-        title: const Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(
-              'Hostel Details',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
+        title: Text(
+          'Hostel Details',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
-            ),
-          ],
         ),
+        elevation: 0,
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
@@ -127,7 +120,8 @@ class _AdminHostelDetailsPageState extends State<AdminHostelDetailsPage> {
                   child: SizedBox(
                     width: double.infinity,
                     height: 200,
-                    child: GoogleMapPage(latitude: latitude,longitude: longitude),
+                    child:
+                        GoogleMapPage(latitude: latitude, longitude: longitude),
                   ),
                 ),
 
@@ -149,7 +143,7 @@ class _AdminHostelDetailsPageState extends State<AdminHostelDetailsPage> {
                               borderRadius: BorderRadius.circular(10),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
+                                  color: Colors.black.withValues(alpha: 0.1),
                                   spreadRadius: 1,
                                   blurRadius: 2,
                                   offset: const Offset(0, 2),
@@ -191,7 +185,7 @@ class _AdminHostelDetailsPageState extends State<AdminHostelDetailsPage> {
                       color: Colors.white,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           spreadRadius: 1,
                           blurRadius: 2,
                           offset: const Offset(0, 2),
@@ -399,12 +393,11 @@ class _AdminHostelDetailsPageState extends State<AdminHostelDetailsPage> {
                         );
                       },
                       style: ButtonStyle(
-                        shadowColor: MaterialStateProperty.all(Colors.grey),
-                        backgroundColor: MaterialStateProperty.all(
+                        shadowColor: WidgetStateProperty.all(Colors.grey),
+                        backgroundColor: WidgetStateProperty.all(
                           Colors.green[400],
                         ),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -431,12 +424,11 @@ class _AdminHostelDetailsPageState extends State<AdminHostelDetailsPage> {
                     child: ElevatedButton(
                       onPressed: alertDialog,
                       style: ButtonStyle(
-                        shadowColor: MaterialStateProperty.all(Colors.grey),
-                        backgroundColor: MaterialStateProperty.all(
+                        shadowColor: WidgetStateProperty.all(Colors.grey),
+                        backgroundColor: WidgetStateProperty.all(
                           Colors.red[500],
                         ),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
